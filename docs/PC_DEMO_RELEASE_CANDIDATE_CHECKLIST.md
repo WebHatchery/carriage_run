@@ -55,6 +55,7 @@ cargo test --all-features
 .\scripts\audit_privacy.ps1
 .\scripts\write_release_manifest.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
 .\scripts\smoke_windows_package.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
+.\scripts\scan_windows_package.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
 ```
 
 - [ ] Formatting passes.
@@ -116,7 +117,8 @@ Complete each path without development tools or pre-existing saves.
   storefront client.
 - [ ] Scan the exact archive with available malware scanners and record scanner,
   definition/date, result, and any investigated false positive. A clean result
-  is supporting evidence, not proof of safety.
+  is supporting evidence, not proof of safety. Retain the record described in
+  `PC_DEMO_MALWARE_SCAN_EVIDENCE.md`.
 
 ## Player, language, media, and policy review
 
