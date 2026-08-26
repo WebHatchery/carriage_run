@@ -20,9 +20,14 @@ jobs:
   checks-and-webgl:
     name: Check, test, and build WebGL
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: carriage_run
     steps:
       - name: Checkout game
         uses: actions/checkout@v4
+        with:
+          path: carriage_run
 
       - name: Checkout pinned macroquad-toolkit
         uses: actions/checkout@v4
@@ -55,8 +60,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
-          key: ${{ runner.os }}-carriage-run-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'macroquad-toolkit/Cargo.toml', 'toolkit.lock') }}
+            carriage_run/target
+          key: ${{ runner.os }}-carriage-run-cargo-${{ hashFiles('carriage_run/Cargo.lock', 'carriage_run/Cargo.toml', 'macroquad-toolkit/Cargo.toml', 'carriage_run/toolkit.lock') }}
           restore-keys: |
             ${{ runner.os }}-carriage-run-cargo-
 
@@ -67,7 +72,7 @@ jobs:
           test -d assets
           test -f publish.ps1
           test -s catalog_thumbnail.png
-          test "$(cat toolkit.lock)" = "$(git -C macroquad-toolkit rev-parse HEAD)"
+          test "$(cat toolkit.lock)" = "$(git -C ../macroquad-toolkit rev-parse HEAD)"
 
       - name: Check formatting
         run: cargo fmt --manifest-path Cargo.toml -- --check
@@ -93,9 +98,14 @@ jobs:
   windows-build:
     name: Build Windows release and publisher check
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: carriage_run
     steps:
       - name: Checkout game
         uses: actions/checkout@v4
+        with:
+          path: carriage_run
 
       - name: Checkout pinned macroquad-toolkit
         uses: actions/checkout@v4
