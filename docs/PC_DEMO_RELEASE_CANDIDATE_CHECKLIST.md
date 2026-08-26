@@ -155,7 +155,9 @@ Complete each path without development tools or pre-existing saves.
 Use `PC_DEMO_KNOWN_ISSUES_DRAFT.md` for issue closeout and
 `PC_DEMO_ROLLBACK_PROCEDURE.md` for the retained-build decision and switch
 record. Player-facing troubleshooting must be reviewed from
-`PC_DEMO_SUPPORT_GUIDE_DRAFT.md` against the exact uploaded candidate.
+`PC_DEMO_SUPPORT_GUIDE_DRAFT.md` against the exact uploaded candidate. Copy the
+exact evidence and remaining gates into `PC_DEMO_GO_NO_GO_DRAFT.md`; the human
+decision record belongs there rather than in an informal release message.
 
 No-go remains the default while any product/authority item, blocker, exact-build
 CI gate, clean-machine critical path, five-player gate, policy/licensing gate,
