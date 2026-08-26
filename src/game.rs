@@ -5,6 +5,7 @@ mod action_navigation;
 mod action_settings;
 mod actions;
 mod capture;
+mod diagnostics;
 mod input;
 mod persistence;
 
@@ -62,10 +63,13 @@ impl Game {
         let loaded_assets = assets.load_texture_configs(&data.texture_manifest).await;
 
         let mut notifications = NotificationManager::new();
-        notifications.info(format!(
-            "Carriage Run ready; {} manifest textures loaded",
-            loaded_assets
-        ));
+        let show_startup_diagnostics = diagnostics::startup_diagnostics_enabled();
+        if show_startup_diagnostics {
+            notifications.info(format!(
+                "Carriage Run ready; {} manifest textures loaded",
+                loaded_assets
+            ));
+        }
 
         let settings = RuntimeSettings::load(&data.config.game_name);
         settings.apply();
@@ -75,19 +79,21 @@ impl Game {
         let layout_warnings = localizer.layout_warnings();
         let _ = localizer.text("menu.new_campaign");
         let missing_keys = localizer.missing_keys().count();
-        notifications.info(format!(
-            "Language {} ready; {} fallback font(s)",
-            locale.id(),
-            font_fallbacks(locale).len()
-        ));
-        if !layout_warnings.is_empty() {
-            notifications.warning(format!(
-                "{} localized string(s) may need a wider layout",
-                layout_warnings.len()
+        if show_startup_diagnostics {
+            notifications.info(format!(
+                "Language {} ready; {} fallback font(s)",
+                locale.id(),
+                font_fallbacks(locale).len()
             ));
-        }
-        if missing_keys > 0 {
-            notifications.warning(format!("{} localization key(s) missing", missing_keys));
+            if !layout_warnings.is_empty() {
+                notifications.warning(format!(
+                    "{} localized string(s) may need a wider layout",
+                    layout_warnings.len()
+                ));
+            }
+            if missing_keys > 0 {
+                notifications.warning(format!("{} localization key(s) missing", missing_keys));
+            }
         }
         let mut session = GameSession::new(&data.config, data.first_mission_id());
         session.sync_chassis(&data);

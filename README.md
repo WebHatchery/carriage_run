@@ -50,6 +50,21 @@ the local WebHatchery game directory.
 Release budgets, dependency/version policy, license inventories, and the
 latest verification captures live under `docs/`.
 
+## Release diagnostics
+
+Release builds keep asset and localization startup notices out of the
+player-facing UI by default. To include those notices during a support session,
+launch the native executable from PowerShell with diagnostics enabled:
+
+```powershell
+$env:CARRIAGE_DIAGNOSTICS = "1"
+.\carriage_run.exe
+```
+
+Save recovery, load failures, and invalid installed-data errors remain visible
+without this switch because they require action from the player. Deterministic
+screenshot captures always suppress startup diagnostics.
+
 ## Project status
 
 The release backlog in [TODO.md](TODO.md) is complete. Remaining work should
