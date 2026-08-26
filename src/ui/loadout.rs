@@ -35,7 +35,7 @@ pub(super) fn draw_loadout(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<U
         draw_badge(
             Rect::new(872.0, 610.0, 326.0, 25.0),
             &if boost_needed {
-                format!("{limit:.0}s deadline · ACTIVE BOOST REQUIRED")
+                format!("{limit:.0}s deadline · HOLD BOOST TO MAKE THE DEADLINE")
             } else {
                 format!("{limit:.0}s deadline · cruise has safe headroom")
             },

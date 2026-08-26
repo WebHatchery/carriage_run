@@ -93,7 +93,8 @@ Complete each path without development tools or pre-existing saves.
   retry, pause/settings, demo end, replay, and exit.
 - [ ] Controller-only: the same path, including disconnect and reconnect.
 - [ ] Mouse/touch targets provide every required action and visible instructions
-  name the actual control or gesture.
+  name the actual control or gesture; repeat
+  `PC_DEMO_CONTROL_INSTRUCTION_AUDIT.md` against the exact demo.
 - [ ] Save creation, reload, backup recovery, deletion, version handling, and the
   approved transfer/non-transfer policy work in the demo namespace.
 - [ ] Focus loss, audio mute/restore, window/fullscreen transitions, Alt-Tab,

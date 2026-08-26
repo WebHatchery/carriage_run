@@ -7,6 +7,20 @@ use macroquad::prelude::*;
 use macroquad_toolkit::prelude::draw_text_centered_in_box;
 use macroquad_toolkit::ui::draw_ui_text_ex;
 
+#[cfg(test)]
+mod tests;
+
+pub(super) const FIRST_ROUTE_LESSONS: [&str; 7] = [
+    "Tap LEFT or RIGHT to keep the wagon on the road.",
+    "A WAVE INCOMING warning gives you time to prepare.",
+    "Drag a guard on the road to issue a move order.",
+    "Tap a guard to switch between Roam and Hold.",
+    "Drag a ranged guard onto a gold wagon slot to mount them.",
+    "Tap BRAKE to steady rough hazards and protect cargo.",
+    "Hold BOOST when the road is clear to reach the marker faster.",
+];
+pub(super) const ACTIVE_BREAKOUT_INSTRUCTION: &str = "BREAKOUT — Tap BRAKE or a guard";
+
 pub(super) fn draw_touch_controls(run: &MissionRun, colorblind_safe: bool) {
     let palette = crate::settings::colorblind_palette(colorblind_safe);
     let info = Color::new(palette[3].0, palette[3].1, palette[3].2, 0.96);
@@ -44,20 +58,11 @@ fn draw_guided_first_route(run: &MissionRun) {
     if run.mission_id != "muddy_road" || run.elapsed > 24.0 {
         return;
     }
-    let lessons = [
-        "Tap LEFT or RIGHT to keep the wagon on the road.",
-        "A WAVE INCOMING warning gives you time to prepare.",
-        "Drag a guard on the road to issue a move order.",
-        "Tap a guard to switch between Roam and Hold.",
-        "Drag a ranged guard onto a gold wagon slot to mount them.",
-        "Tap BRAKE to steady rough hazards and protect cargo.",
-        "Hold BOOST when the road is clear to reach the marker faster.",
-    ];
-    let index = ((run.elapsed / 3.2).floor() as usize).min(lessons.len() - 1);
+    let index = ((run.elapsed / 3.2).floor() as usize).min(FIRST_ROUTE_LESSONS.len() - 1);
     let rect = Rect::new(340.0, 242.0, 600.0, 46.0);
     draw_panel_with_fill(rect, Color::new(0.05, 0.14, 0.16, 0.96), true);
     draw_text_centered_in_box(
-        lessons[index],
+        FIRST_ROUTE_LESSONS[index],
         rect.x + 12.0,
         rect.y + 11.0,
         rect.w - 24.0,
@@ -91,7 +96,7 @@ pub(super) fn draw_boss_and_breakout(run: &MissionRun) {
         draw_panel_with_fill(rect, Color::new(0.20, 0.12, 0.04, 0.92), active);
         draw_ui_text_ex(
             if active {
-                "BREAKOUT — BRAKE / GUARD"
+                ACTIVE_BREAKOUT_INSTRUCTION
             } else {
                 "Prisoner security"
             },

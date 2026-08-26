@@ -205,7 +205,11 @@ impl Game {
         clear_background(dark::BACKGROUND);
 
         if let Some(error) = &self.startup_error {
-            ui::draw_recovery_screen(error);
+            let virtual_ui = begin_virtual_ui_frame(ui::LOGICAL_WIDTH, ui::LOGICAL_HEIGHT);
+            if ui::draw_recovery_screen(error, virtual_ui.mouse_position()) {
+                macroquad::miniquad::window::quit();
+            }
+            end_virtual_ui_frame();
             self.notifications
                 .draw_with_config(&NotificationRenderConfig {
                     anchor: NotificationAnchor::BottomRight,

@@ -78,6 +78,12 @@ impl Game {
                 self.session.set_codex_tab(CodexTab::Hazards);
             }
             "credits" => self.session.open_credits(),
+            "recovery" => {
+                self.startup_error = Some(
+                    "Installed mission data is missing or unreadable. No save was changed."
+                        .to_owned(),
+                );
+            }
             "results" => {
                 // A completed mission with a special meter (most stat rows) so
                 // the results layout is exercised at its fullest.

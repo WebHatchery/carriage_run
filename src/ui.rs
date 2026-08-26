@@ -205,9 +205,13 @@ pub fn draw_game_ui(ctx: UiContext<'_>) -> Vec<UiAction> {
     actions
 }
 
-pub fn draw_recovery_screen(error: &str) {
+const RECOVERY_EXIT_LABEL: &str = "Exit Game";
+const RECOVERY_INSTRUCTION: &str =
+    "The roadbook could not be opened. Your existing save was left untouched. Tap EXIT GAME, verify the installed data, then relaunch.";
+
+pub fn draw_recovery_screen(error: &str, mouse: Vec2) -> bool {
     draw_menu_backdrop(0.0);
-    let panel = Rect::new(210.0, 150.0, 860.0, 410.0);
+    let panel = Rect::new(210.0, 100.0, 860.0, 520.0);
     draw_panel(panel, true);
     draw_section_label(
         "Caravan Recovery",
@@ -216,7 +220,7 @@ pub fn draw_recovery_screen(error: &str) {
         panel.w - 72.0,
     );
     draw_text_block(
-        "The roadbook could not be opened. Your existing save was left untouched. Close and verify the installed data, then try again.",
+        RECOVERY_INSTRUCTION,
         panel.x + 48.0,
         panel.y + 112.0,
         panel.w - 96.0,
@@ -230,7 +234,7 @@ pub fn draw_recovery_screen(error: &str) {
         panel.x + 48.0,
         panel.y + 230.0,
         panel.w - 96.0,
-        80.0,
+        100.0,
         16.0,
         4.0,
         MUTED,
@@ -238,12 +242,23 @@ pub fn draw_recovery_screen(error: &str) {
     draw_text_centered_in_box(
         "Native crash logging remains available for unrecoverable failures.",
         panel.x + 48.0,
-        panel.bottom() - 58.0,
+        panel.bottom() - 164.0,
         panel.w - 96.0,
         24.0,
         14.0,
         GOLD_SOFT,
     );
+    virtual_button(
+        recovery_exit_rect(panel),
+        RECOVERY_EXIT_LABEL,
+        true,
+        ButtonTone::Danger,
+        mouse,
+    )
+}
+
+fn recovery_exit_rect(panel: Rect) -> Rect {
+    Rect::new(panel.x + 290.0, panel.bottom() - 70.0, 280.0, 44.0)
 }
 
 fn draw_title(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {

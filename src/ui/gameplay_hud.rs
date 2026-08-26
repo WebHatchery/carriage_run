@@ -708,7 +708,7 @@ fn draw_drag_hint(pos: Vec2) {
     draw_line(pos.x - 8.0, pos.y, pos.x + 8.0, pos.y, 1.0, GOLD_SOFT);
     draw_line(pos.x, pos.y - 8.0, pos.x, pos.y + 8.0, 1.0, GOLD_SOFT);
     draw_ui_text_ex(
-        "Drag to reposition",
+        "Drag to move",
         pos.x + 16.0,
         pos.y + 5.0,
         TextStyle::new(12.0, MUTED).params(),

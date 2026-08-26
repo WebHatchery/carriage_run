@@ -7,6 +7,9 @@ use macroquad::prelude::*;
 use macroquad_toolkit::prelude::*;
 use macroquad_toolkit::ui::draw_ui_text_ex;
 
+pub(super) const STEERING_BINDING_LABEL: &str = "Steer (LEFT / RIGHT)";
+pub(super) const RECOVERY_BINDING_LABEL: &str = "Actions (REPAIR / Save / Load)";
+
 pub(super) fn draw_settings_aux(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
     draw_save_slots(ctx, mouse, actions);
     draw_runtime_preferences(ctx, mouse, actions);
@@ -200,7 +203,7 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     y += 22.0;
     cycle_row(
         "steering",
-        "Steer keys",
+        STEERING_BINDING_LABEL,
         &format!(
             "{} / {}",
             settings.bindings.steer_left, settings.bindings.steer_right
@@ -213,7 +216,7 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     y += 22.0;
     cycle_row(
         "recovery",
-        "Repair / save / load",
+        RECOVERY_BINDING_LABEL,
         &format!(
             "{} / {} / {}",
             settings.bindings.repair, settings.bindings.save, settings.bindings.load

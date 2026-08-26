@@ -3,7 +3,7 @@
 Audit date: 2026-08-27
 
 Status: engineering handoff for fluent human review. Carriage Run currently has
-complete English/German/French parity for the **19 keyed strings** in
+complete English/German/French parity for the **18 keyed strings** in
 `assets/data/localization.json`, not for the whole game. Many mission names,
 descriptions, buttons, statistics, tutorials, codex entries, and expedition
 screens remain authored directly in English. Do not advertise full German or
@@ -19,8 +19,8 @@ The Rust localization tests verify:
   budgets (menu 24, settings 32, tutorial 60, explanatory text 72);
 - every character used by all three tables exists in the shipped Rajdhani
   Latin-extended font bytes;
-- each tutorial instruction names the exact localized visible **Continue**
-  control; and
+- on-road touch instructions are separately tested against their visible
+  controls and direct gestures; and
 - the existing runtime fallback and broad layout-warning behavior still works.
 
 Deterministic captures are stored directly in `docs/verification/` as
@@ -36,8 +36,7 @@ Currently keyed and translated:
   Guide, Credits, and Exit Game controls;
 - fullscreen, resolution, VSync, FPS cap, text size, colorblind palette,
   reduced motion, and drag-order labels;
-- two results explanations; and
-- the Continue tutorial instruction.
+- two results explanations.
 
 Still English and therefore outside any truthful German/French support claim:
 

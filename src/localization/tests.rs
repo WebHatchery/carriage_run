@@ -28,7 +28,7 @@ fn every_locale_has_exactly_the_english_key_set() {
     let english = localizer.table_for(Language::English);
     assert_eq!(
         english.len(),
-        19,
+        18,
         "update the review packet when keyed scope changes"
     );
     for language in [Language::German, Language::French] {
@@ -69,8 +69,6 @@ fn translated_values_are_nonempty_control_free_and_within_ui_budgets() {
                 24
             } else if key.starts_with("settings.") {
                 32
-            } else if key.starts_with("tutorial.") {
-                60
             } else {
                 72
             };
@@ -104,19 +102,5 @@ fn shipped_font_contains_every_localized_glyph() {
                 language.id()
             );
         }
-    }
-}
-
-#[test]
-fn tutorial_names_the_exact_visible_continue_control() {
-    let localizer = Localizer::english();
-    for language in Language::ALL {
-        let table = localizer.table_for(language);
-        let button = table["menu.continue"].to_uppercase();
-        assert!(
-            table["tutorial.continue"].contains(&button),
-            "{} tutorial must name visible control {button}",
-            language.id()
-        );
     }
 }
