@@ -5,6 +5,7 @@ mod balance_expedition;
 mod balance_report;
 mod chassis;
 mod expedition;
+mod playtest_saves;
 mod progression;
 mod runs;
 mod validation;
