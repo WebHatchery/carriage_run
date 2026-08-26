@@ -14,6 +14,8 @@
 param(
     [string[]]$Scenes = @("gameplay", "map"),
     [int]$Frames = 150,
+    [int]$WindowWidth = 0,
+    [int]$WindowHeight = 0,
     [string]$OutputDir = "docs\verification",
     [switch]$SkipBuild,
     [switch]$Release
@@ -23,4 +25,6 @@ $ErrorActionPreference = "Stop"
 $gameDir = Split-Path -Parent $PSScriptRoot
 $shared = Join-Path (Split-Path -Parent $gameDir) "macroquad-toolkit\scripts\capture_ui.ps1"
 
-& $shared -GameDir $gameDir -Prefix "CARRIAGE" -Scenes $Scenes -Frames $Frames -OutputDir $OutputDir -SkipBuild:$SkipBuild -Release:$Release
+& $shared -GameDir $gameDir -Prefix "CARRIAGE" -Scenes $Scenes -Frames $Frames `
+    -WindowWidth $WindowWidth -WindowHeight $WindowHeight -OutputDir $OutputDir `
+    -SkipBuild:$SkipBuild -Release:$Release
