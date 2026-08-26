@@ -4,6 +4,7 @@ use macroquad::prelude::*;
 use macroquad_toolkit::capture;
 
 mod audio;
+mod build_info;
 mod crash;
 mod data;
 mod game;
@@ -27,6 +28,7 @@ fn window_conf() -> Conf {
 async fn main() {
     // Install early so even the startup data-load panic leaves a crash log.
     crash::install_panic_hook("carriage_run");
+    eprintln!("Carriage Run build: {}", build_info::diagnostic_line());
 
     let mut game = Game::new().await;
 

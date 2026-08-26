@@ -8,7 +8,9 @@ param(
     [switch]$DeployOnly = $false,
     [Alias('p')] [switch]$Production = $false,
     [switch]$FTP = $false,
-    [switch]$DryRun = $false
+    [switch]$DryRun = $false,
+    [ValidateSet("full", "demo")]
+    [string]$Channel = "full"
 )
 
 $ErrorActionPreference = "Stop"
@@ -19,13 +21,48 @@ if (-not (Test-Path $rootPublisher)) {
     exit 1
 }
 
-& $rootPublisher -RustGamePublish -ProjectDir $PSScriptRoot `
-    -SkipBuild:$SkipBuild `
-    -WindowsOnly:$WindowsOnly `
-    -WebGLOnly:$WebGLOnly `
-    -DeployOnly:$DeployOnly `
-    -Production:$Production `
-    -FTP:$FTP `
-    -DryRun:$DryRun
+$previousChannel = [Environment]::GetEnvironmentVariable("CARRIAGE_BUILD_CHANNEL", "Process")
+$previousBuildUtc = [Environment]::GetEnvironmentVariable("CARRIAGE_BUILD_UTC", "Process")
+$previousCommit = [Environment]::GetEnvironmentVariable("CARRIAGE_BUILD_COMMIT", "Process")
+try {
+    $env:CARRIAGE_BUILD_CHANNEL = $Channel
+    $env:CARRIAGE_BUILD_UTC = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $env:CARRIAGE_BUILD_COMMIT = (& git -C $PSScriptRoot rev-parse HEAD).Trim()
+    if ($LASTEXITCODE -ne 0) { throw "Could not determine the build commit." }
 
-if (-not $?) { exit 1 }
+    & $rootPublisher -RustGamePublish -ProjectDir $PSScriptRoot `
+        -SkipBuild:$SkipBuild `
+        -WindowsOnly:$WindowsOnly `
+        -WebGLOnly:$WebGLOnly `
+        -DeployOnly:$DeployOnly `
+        -Production:$Production `
+        -FTP:$FTP `
+        -DryRun:$DryRun
+
+    if (-not $?) { exit 1 }
+    if (-not $SkipBuild -and -not $DeployOnly -and -not $DryRun) {
+        $metadata = cargo metadata --manifest-path (Join-Path $PSScriptRoot "Cargo.toml") --locked --no-deps --format-version 1 | ConvertFrom-Json
+        if ($LASTEXITCODE -ne 0) { throw "Could not read package metadata for the build record." }
+        $package = @($metadata.packages | Where-Object { $_.name -eq "carriage_run" })
+        if ($package.Count -ne 1) { throw "Expected one carriage_run package in Cargo metadata." }
+        $buildRecord = [ordered]@{
+            schema_version = 1
+            game = "carriage_run"
+            version = $package[0].version
+            channel = $env:CARRIAGE_BUILD_CHANNEL
+            target = "x86_64-pc-windows-msvc"
+            commit = $env:CARRIAGE_BUILD_COMMIT
+            built_at_utc = $env:CARRIAGE_BUILD_UTC
+            toolkit_revision = (Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot "toolkit.lock")).Trim()
+        }
+        $buildRecordPath = Join-Path $PSScriptRoot "dist\carriage_run_build_info.json"
+        $utf8NoBom = [Text.UTF8Encoding]::new($false)
+        [IO.File]::WriteAllText($buildRecordPath, ($buildRecord | ConvertTo-Json) + [Environment]::NewLine, $utf8NoBom)
+        Write-Host "Build record: $buildRecordPath"
+    }
+}
+finally {
+    $env:CARRIAGE_BUILD_CHANNEL = $previousChannel
+    $env:CARRIAGE_BUILD_UTC = $previousBuildUtc
+    $env:CARRIAGE_BUILD_COMMIT = $previousCommit
+}

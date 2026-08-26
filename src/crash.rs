@@ -58,7 +58,8 @@ fn payload_message(payload: &(dyn std::any::Any + Send)) -> String {
 #[cfg(not(target_arch = "wasm32"))]
 fn format_report(message: &str, location: Option<&str>) -> String {
     format!(
-        "=== Carriage Run crash ===\nlocation: {}\nmessage: {}",
+        "=== Carriage Run crash ===\nbuild: {}\nlocation: {}\nmessage: {}",
+        crate::build_info::diagnostic_line(),
         location.unwrap_or("unknown"),
         message,
     )

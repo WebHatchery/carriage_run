@@ -41,7 +41,12 @@ cargo run
 
 The publisher is the project validation path. It builds and packages the
 Windows and WebGL targets, checks release budgets, and deploys the result to
-the local WebHatchery game directory.
+the local WebHatchery game directory. It also embeds the package version,
+channel, commit, UTC build time, and pinned toolkit revision. These details are
+available quietly on the Credits screen, in console diagnostics, and in crash
+logs. The same identity is written to `dist/carriage_run_build_info.json` for
+the release-manifest gate. Use `-Channel demo` only for an approved demo build;
+normal publishing defaults to `full`.
 
 ```powershell
 .\scripts\browser_smoke.ps1

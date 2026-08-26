@@ -68,6 +68,7 @@ impl Game {
                 self.session.open_codex();
                 self.session.set_codex_tab(CodexTab::Hazards);
             }
+            "credits" => self.session.open_credits(),
             "results" => {
                 // A completed mission with a special meter (most stat rows) so
                 // the results layout is exercised at its fullest.

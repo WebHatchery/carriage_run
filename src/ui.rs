@@ -668,6 +668,24 @@ fn draw_credits(_ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) 
         19.0,
         UI_GOLD,
     );
+    draw_text_centered_in_box(
+        &crate::build_info::credits_version_line(),
+        panel.x + 52.0,
+        panel.y + 360.0,
+        panel.w - 104.0,
+        24.0,
+        15.0,
+        MUTED,
+    );
+    draw_text_centered_in_box(
+        &crate::build_info::credits_build_line(),
+        panel.x + 52.0,
+        panel.y + 388.0,
+        panel.w - 104.0,
+        24.0,
+        14.0,
+        MUTED,
+    );
     if virtual_button(
         Rect::new(panel.x + 220.0, panel.bottom() - 72.0, 240.0, 42.0),
         "Back to Title",

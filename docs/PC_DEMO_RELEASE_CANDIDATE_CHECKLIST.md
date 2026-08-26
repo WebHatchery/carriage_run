@@ -70,7 +70,8 @@ cargo test --all-features
 - [ ] Required third-party notices, including the Rajdhani OFL notice, ship.
 - [ ] The `.sha256` sidecar independently verifies against the retained ZIP.
 - [ ] The JSON manifest records the expected version, commit, channel, toolkit
-  revision, build time, package hash, and every contained file.
+  revision, publisher build time, package hash, and every contained file; its
+  identity agrees with `carriage_run_build_info.json`.
 - [ ] The RC archive, manifest, checksum, logs, and test evidence are retained
   together in access-controlled storage.
 - [ ] The last known-good build remains available and its rollback destination,

@@ -12,7 +12,7 @@ param(
     [ValidateSet("full", "demo")]
     [string]$Channel = "full",
     [string]$Output,
-    [string]$BuiltAtUtc = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    [string]$BuildInfo = "dist\carriage_run_build_info.json"
 )
 
 $ErrorActionPreference = "Stop"
@@ -52,6 +52,10 @@ $outputPath = if ($Output) {
     Join-Path $artifactDirectory "${artifactBaseName}_manifest.json"
 }
 $checksumPath = "${artifactPath}.sha256"
+$buildInfoPath = Resolve-GamePath $BuildInfo
+if (-not (Test-Path -LiteralPath $buildInfoPath -PathType Leaf)) {
+    throw "Missing publisher build record: $buildInfoPath. Run .\publish.ps1 first."
+}
 
 Push-Location $gameDir
 try {
@@ -64,6 +68,29 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Could not read the release commit." }
     $toolkitRevision = (Get-Content -Raw -LiteralPath (Join-Path $gameDir "toolkit.lock")).Trim()
     if ($toolkitRevision -notmatch '^[0-9a-f]{40}$') { throw "toolkit.lock does not contain a full Git revision." }
+    $buildInfoRecord = Get-Content -Raw -LiteralPath $buildInfoPath | ConvertFrom-Json
+    $expectedBuildInfo = [ordered]@{
+        schema_version = 1
+        game = "carriage_run"
+        version = $package[0].version
+        channel = $Channel
+        target = "x86_64-pc-windows-msvc"
+        commit = $commit
+        toolkit_revision = $toolkitRevision
+    }
+    foreach ($field in $expectedBuildInfo.Keys) {
+        if ($buildInfoRecord.$field -ne $expectedBuildInfo[$field]) {
+            throw "Publisher build record $field mismatch: expected '$($expectedBuildInfo[$field])', found '$($buildInfoRecord.$field)'."
+        }
+    }
+    $builtAtUtc = if ($buildInfoRecord.built_at_utc -is [DateTime]) {
+        $buildInfoRecord.built_at_utc.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    } else {
+        [string]$buildInfoRecord.built_at_utc
+    }
+    if ($builtAtUtc -notmatch '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$') {
+        throw "Publisher build record has an invalid UTC timestamp: $builtAtUtc"
+    }
 
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $archive = [IO.Compression.ZipFile]::OpenRead($artifactPath)
@@ -118,7 +145,7 @@ try {
         channel = $Channel
         target = "x86_64-pc-windows-msvc"
         commit = $commit
-        built_at_utc = $BuiltAtUtc
+        built_at_utc = $builtAtUtc
         toolkit_revision = $toolkitRevision
         artifact = [ordered]@{
             filename = $artifactInfo.Name
