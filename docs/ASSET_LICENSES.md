@@ -20,3 +20,9 @@ the shared toolkit synthesizer, so it has no third-party audio license.
 Run scripts/generate_license_inventory.ps1 after changing a dependency or
 asset. It resolves only Carriage Run's locked transitive Cargo graph, scans the
 asset tree, and refreshes the evidence in docs/THIRD_PARTY_LICENSES.md.
+
+Creation/edit history, binary hashes, generative-AI evidence, and unresolved
+human attestations are recorded separately in `docs/ASSET_PROVENANCE.md`. Run
+`scripts/audit_asset_provenance.ps1` after changing any shipped asset. The
+project-original statement above is a rights assertion that still requires the
+publisher's creator/assignment/tool-terms confirmation before public release.

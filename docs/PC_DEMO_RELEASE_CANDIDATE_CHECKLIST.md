@@ -50,6 +50,7 @@ cargo fmt -- --check
 cargo clippy --all-targets --all-features -- -D warnings
 cargo test --all-features
 .\scripts\generate_license_inventory.ps1
+.\scripts\audit_asset_provenance.ps1
 .\publish.ps1
 .\scripts\audit_privacy.ps1
 .\scripts\write_release_manifest.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
@@ -59,6 +60,8 @@ cargo test --all-features
 - [ ] Clippy passes with warnings denied.
 - [ ] All tests pass and the test count is recorded.
 - [ ] License inventory regeneration produces no unexplained change.
+- [ ] Asset provenance audit passes, and every human creator/ownership/tool,
+  translation, and storefront AI-disclosure attestation is attached.
 - [ ] The publisher completes and produces the uniquely named demo archive.
 - [ ] Privacy engineering audit passes.
 - [ ] Release-manifest validation passes; archive and per-file hashes are saved.
