@@ -257,9 +257,19 @@ pub(super) fn draw_section_title(label: &str, y: f32) {
 }
 
 pub(super) fn draw_section_label(label: &str, x: f32, y: f32, width: f32) {
-    draw_line(x, y, x + 120.0, y, 1.0, GOLD_SOFT);
-    draw_line(x + width - 120.0, y, x + width, y, 1.0, GOLD_SOFT);
-    draw_text_centered_in_box(label, x + 124.0, y - 15.0, width - 248.0, 26.0, 18.0, GOLD);
+    let line_width = (width * 0.2).min(120.0);
+    let gap = 8.0;
+    draw_line(x, y, x + line_width, y, 1.0, GOLD_SOFT);
+    draw_line(x + width - line_width, y, x + width, y, 1.0, GOLD_SOFT);
+    draw_text_centered_in_box(
+        label,
+        x + line_width + gap,
+        y - 15.0,
+        width - (line_width + gap) * 2.0,
+        26.0,
+        18.0,
+        GOLD,
+    );
 }
 
 pub(super) fn draw_panel(rect: Rect, strong: bool) {

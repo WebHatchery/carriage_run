@@ -22,6 +22,7 @@ The release recommendation remains **NO-GO** while any row above is unresolved.
 | ID | Resolution | Regression evidence |
 | --- | --- | --- |
 | DEMO-007 | Release publishing remaps workspace and build-profile roots while retaining source-relative panic locations. | Run `scripts/audit_release_paths.ps1` against every exact candidate; it rejects known checkout roots and generic Windows/Linux user-profile paths in packaged executables. |
+| DEMO-008 | Fullscreen capture now produces exact 1920×1080 framebuffers; the gameplay HUD, mission-detail panel, Settings columns, and PC-facing control label fit the logical canvas. | `PC_DEMO_VISUAL_CAPTURE_EVIDENCE.md`, layout regression tests, and the refreshed `docs/verification/smoke_fullscreen_*.png` set. Final store media still requires the approved demo build and human review. |
 
 ## Candidate issue format
 

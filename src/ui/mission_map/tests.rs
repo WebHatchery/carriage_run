@@ -10,6 +10,14 @@ fn prepare_loadout_button_stays_inside_standard_panel() {
     assert_prepare_loadout_is_in_panel(selected_route_layout(1280.0, 720.0), 1280.0);
 }
 
+#[test]
+fn fullscreen_rendering_uses_the_logical_canvas() {
+    let layout = selected_route_layout(LOGICAL_WIDTH, LOGICAL_HEIGHT);
+    assert_eq!(layout.panel.right(), 1236.0);
+    assert!(layout.threats.right() < layout.hazards.x);
+    assert!(layout.hazards.right() < layout.cta_divider);
+}
+
 fn assert_prepare_loadout_is_in_panel(layout: SelectedRouteLayout, screen_w: f32) {
     assert!(layout.panel.x >= 0.0);
     assert!(layout.panel.right() <= screen_w);

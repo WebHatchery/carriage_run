@@ -7,6 +7,9 @@ use macroquad::prelude::*;
 use macroquad_toolkit::prelude::*;
 use macroquad_toolkit::ui::draw_ui_text_ex;
 
+#[cfg(test)]
+mod tests;
+
 pub(super) const STEERING_BINDING_LABEL: &str = "Steer (LEFT / RIGHT)";
 pub(super) const RECOVERY_BINDING_LABEL: &str = "Actions (REPAIR / Save / Load)";
 
@@ -16,7 +19,7 @@ pub(super) fn draw_settings_aux(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut 
 }
 
 fn draw_save_slots(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
-    let panel = Rect::new(940.0, 122.0, 300.0, 248.0);
+    let panel = Rect::new(640.0, 122.0, 600.0, 248.0);
     draw_panel(panel, true);
     draw_section_label("Save Slots", panel.x + 18.0, panel.y + 22.0, panel.w - 36.0);
     draw_ui_text_ex(
@@ -25,11 +28,16 @@ fn draw_save_slots(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>
         panel.y + 55.0,
         TextStyle::new(15.0, GOLD).params(),
     );
-    let mut y = panel.y + 70.0;
-    for slot in ctx.save_slots.iter().take(3) {
+    let slot_width = (panel.w - 44.0) / 3.0;
+    for (index, slot) in ctx.save_slots.iter().take(3).enumerate() {
         let active = slot == ctx.active_save_slot;
         if virtual_button(
-            Rect::new(panel.x + 18.0, y, panel.w - 36.0, 28.0),
+            Rect::new(
+                panel.x + 18.0 + index as f32 * (slot_width + 4.0),
+                panel.y + 76.0,
+                slot_width,
+                38.0,
+            ),
             slot,
             !active,
             if active {
@@ -41,7 +49,6 @@ fn draw_save_slots(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>
         ) {
             actions.push(UiAction::SelectSaveSlot(slot.clone()));
         }
-        y += 34.0;
     }
     let next = if ctx.save_slots.iter().any(|slot| slot == "slot_2") {
         "slot_3"
@@ -49,7 +56,7 @@ fn draw_save_slots(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>
         "slot_2"
     };
     if virtual_button(
-        Rect::new(panel.x + 18.0, panel.bottom() - 46.0, 82.0, 30.0),
+        Rect::new(panel.x + 64.0, panel.bottom() - 66.0, 136.0, 38.0),
         "Create",
         true,
         ButtonTone::Positive,
@@ -58,7 +65,7 @@ fn draw_save_slots(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>
         actions.push(UiAction::CreateSaveSlot(next.to_owned()));
     }
     if virtual_button(
-        Rect::new(panel.x + 108.0, panel.bottom() - 46.0, 82.0, 30.0),
+        Rect::new(panel.x + 232.0, panel.bottom() - 66.0, 136.0, 38.0),
         "Rename",
         true,
         ButtonTone::Secondary,
@@ -67,7 +74,7 @@ fn draw_save_slots(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>
         actions.push(UiAction::RenameSaveSlot("archive".to_owned()));
     }
     if virtual_button(
-        Rect::new(panel.x + 198.0, panel.bottom() - 46.0, 82.0, 30.0),
+        Rect::new(panel.x + 400.0, panel.bottom() - 66.0, 136.0, 38.0),
         "Delete",
         ctx.save_slots.len() > 1,
         ButtonTone::Danger,
@@ -78,7 +85,7 @@ fn draw_save_slots(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>
 }
 
 fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
-    let panel = Rect::new(940.0, 386.0, 300.0, 334.0);
+    let panel = Rect::new(640.0, 386.0, 600.0, 298.0);
     draw_panel(panel, true);
     draw_section_label(
         "Display & Audio",
@@ -87,47 +94,49 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
         panel.w - 36.0,
     );
     let settings = ctx.settings;
-    let mut y = panel.y + 48.0;
+    let columns = runtime_columns(panel);
+    let mut y = panel.y + 54.0;
+    let mut column = columns[0];
     toggle_row(
         "fullscreen",
         &ctx.localization.display("settings.fullscreen"),
         settings.display.fullscreen,
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     toggle_row(
         "vsync",
         &ctx.localization.display("settings.vsync"),
         settings.vsync,
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     toggle_row(
         "colorblind_safe",
         &ctx.localization.display("settings.colorblind"),
         settings.colorblind_safe,
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     toggle_row(
         "reduced_motion",
         &ctx.localization.display("settings.reduced_motion"),
         settings.reduced_motion,
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     toggle_row(
         "drag_toggle",
         &ctx.localization.display("settings.drag_mode"),
@@ -135,72 +144,73 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
             settings.drag_preference,
             crate::settings::DragPreference::Toggle
         ),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     cycle_row(
         "resolution",
         &ctx.localization.display("settings.resolution"),
         &settings.resolution,
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     cycle_row(
         "fps",
         &ctx.localization.display("settings.fps_cap"),
         &settings.fps_cap.to_string(),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    column = columns[1];
+    y = panel.y + 54.0;
     cycle_row(
         "text_size",
         &ctx.localization.display("settings.text_size"),
         &format!("{:.1}x", settings.text_size),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     cycle_row(
         "master_volume",
         "Master volume",
         &percent(settings.display.master_volume),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     cycle_row(
         "sfx_volume",
         "SFX volume",
         &percent(settings.display.sfx_volume),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     cycle_row(
         "music_volume",
         "Music volume",
         &percent(settings.display.music_volume),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     cycle_row(
         "steering",
         STEERING_BINDING_LABEL,
@@ -208,12 +218,12 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
             "{} / {}",
             settings.bindings.steer_left, settings.bindings.steer_right
         ),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     cycle_row(
         "recovery",
         RECOVERY_BINDING_LABEL,
@@ -221,21 +231,30 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
             "{} / {} / {}",
             settings.bindings.repair, settings.bindings.save, settings.bindings.load
         ),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
-    y += 22.0;
+    y += 32.0;
     cycle_row(
         "language",
         "Language",
         crate::localization::Language::from_id(&settings.language).id(),
-        panel,
+        column,
         y,
         mouse,
         actions,
     );
+}
+
+fn runtime_columns(panel: Rect) -> [Rect; 2] {
+    let gap = 16.0;
+    let width = (panel.w - 36.0 - gap) * 0.5;
+    [
+        Rect::new(panel.x + 18.0, panel.y, width, panel.h),
+        Rect::new(panel.x + 18.0 + width + gap, panel.y, width, panel.h),
+    ]
 }
 
 fn toggle_row(
@@ -247,14 +266,9 @@ fn toggle_row(
     mouse: Vec2,
     actions: &mut Vec<UiAction>,
 ) {
-    draw_ui_text_ex(
-        label,
-        panel.x + 18.0,
-        y + 16.0,
-        TextStyle::new(13.0, INK).params(),
-    );
+    draw_ui_text_ex(label, panel.x, y + 16.0, TextStyle::new(13.0, INK).params());
     if virtual_button(
-        Rect::new(panel.right() - 92.0, y, 74.0, 21.0),
+        Rect::new(panel.right() - 76.0, y, 76.0, 28.0),
         if enabled { "On" } else { "Off" },
         true,
         if enabled {
@@ -277,14 +291,9 @@ fn cycle_row(
     mouse: Vec2,
     actions: &mut Vec<UiAction>,
 ) {
-    draw_ui_text_ex(
-        label,
-        panel.x + 18.0,
-        y + 16.0,
-        TextStyle::new(13.0, INK).params(),
-    );
+    draw_ui_text_ex(label, panel.x, y + 16.0, TextStyle::new(13.0, INK).params());
     if virtual_button(
-        Rect::new(panel.right() - 112.0, y, 94.0, 21.0),
+        Rect::new(panel.right() - 104.0, y, 104.0, 28.0),
         value,
         true,
         ButtonTone::Secondary,

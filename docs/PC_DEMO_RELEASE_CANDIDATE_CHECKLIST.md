@@ -135,7 +135,9 @@ Complete each path without development tools or pre-existing saves.
   `PC_DEMO_LOCALIZATION_REVIEW_PACKET.md`. Advertise only the languages whose
   complete approved demo slice passes.
 - [ ] Store screenshots and trailer footage come from this demo build, meet the
-  selected storefront's current requirements, and contain no diagnostics.
+  selected storefront's current requirements, and contain no diagnostics. Use
+  `PC_DEMO_VISUAL_CAPTURE_EVIDENCE.md` as the engineering baseline, not as proof
+  that the current full-game captures are approved demo media.
 - [ ] Store copy, system requirements, accessibility/language claims, content
   descriptions, asset provenance, license record, privacy statement, and any
   EULA/support/refund copy match the shipped build and have human approval.

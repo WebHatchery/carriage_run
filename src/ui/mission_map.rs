@@ -9,7 +9,7 @@ use super::upgrade_visuals::{
     MUTED,
 };
 use super::widgets::draw_menu_backdrop;
-use super::{UiAction, UiContext};
+use super::{UiAction, UiContext, LOGICAL_HEIGHT, LOGICAL_WIDTH};
 use crate::data::{MissionDef, RouteChoiceDef};
 use macroquad::prelude::*;
 use macroquad_toolkit::prelude::*;
@@ -292,7 +292,7 @@ fn draw_selected_route(
     mouse: Vec2,
     actions: &mut Vec<UiAction>,
 ) {
-    let layout = selected_route_layout(screen_width(), screen_height());
+    let layout = selected_route_layout(LOGICAL_WIDTH, LOGICAL_HEIGHT);
     let panel = layout.panel;
     draw_panel_with_fill(panel, Color::new(0.035, 0.050, 0.044, 0.98), true);
 

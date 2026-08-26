@@ -173,7 +173,7 @@ pub(super) fn draw_settings(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
             ctx,
             mouse,
             actions,
-            Rect::new(360.0, 84.0, 560.0, 600.0),
+            Rect::new(40.0, 84.0, 580.0, 600.0),
             false,
         );
         super::settings_aux::draw_settings_aux(ctx, mouse, actions);

@@ -35,7 +35,7 @@ pub(super) fn draw_touch_controls(run: &MissionRun, colorblind_safe: bool) {
         draw_text_centered_in_box(label, rect.x, rect.y + 18.0, rect.w, 28.0, 16.0, INK);
     }
     draw_ui_text_ex(
-        "Touch controls",
+        "Road controls",
         186.0,
         touch_steer_left_rect().y - 8.0,
         macroquad_toolkit::prelude::TextStyle::new(12.0, MUTED).params(),

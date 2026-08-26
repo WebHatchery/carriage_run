@@ -19,19 +19,34 @@ $gameDir = Split-Path -Parent $PSScriptRoot
 $shared = Join-Path (Split-Path -Parent $gameDir) "macroquad-toolkit\scripts\capture_ui.ps1"
 $scenes = @("title", "map", "loadout", "shop", "guards", "upgrades", "settings", "gameplay")
 $outDir = Join-Path $gameDir "docs\verification"
+Add-Type -AssemblyName System.Drawing
+$built = $SkipBuild
 
 foreach ($viewport in @(
-    @{ Name = "desktop"; Width = 1280; Height = 720 },
-    @{ Name = "touch"; Width = 960; Height = 540 },
-    @{ Name = "fullscreen"; Width = 1920; Height = 1080 }
+    @{ Name = "desktop"; Width = 1280; Height = 720; Fullscreen = $false },
+    @{ Name = "touch"; Width = 960; Height = 540; Fullscreen = $false },
+    @{ Name = "fullscreen"; Width = 1920; Height = 1080; Fullscreen = $true }
 )) {
-    & $shared -GameDir $gameDir -Prefix "CARRIAGE" -Scenes $scenes -Frames $Frames -WindowWidth $viewport.Width -WindowHeight $viewport.Height -OutputDir "docs\verification" -Release -SkipBuild:$SkipBuild -Visible:$Visible
+    & $shared -GameDir $gameDir -Prefix "CARRIAGE" -Scenes $scenes -Frames $Frames `
+        -WindowWidth $viewport.Width -WindowHeight $viewport.Height `
+        -OutputDir "docs\verification" -Release -SkipBuild:$built `
+        -Visible:$Visible -Fullscreen:$viewport.Fullscreen
     if ($LASTEXITCODE -ne 0) { throw "Capture failed for $($viewport.Name)" }
+    $built = $true
 
     foreach ($scene in $scenes) {
         $source = Join-Path $outDir "ui_$scene.png"
         $destination = Join-Path $outDir "smoke_$($viewport.Name)_$scene.png"
         if (-not (Test-Path -LiteralPath $source)) { throw "Missing capture $source" }
+        if ($viewport.Fullscreen) {
+            $image = [Drawing.Image]::FromFile($source)
+            try {
+                if ($image.Width -ne 1920 -or $image.Height -ne 1080) {
+                    throw "Fullscreen capture must be exactly 1920x1080; got $($image.Width)x$($image.Height): $source"
+                }
+            }
+            finally { $image.Dispose() }
+        }
         Move-Item -LiteralPath $source -Destination $destination -Force
     }
 }
