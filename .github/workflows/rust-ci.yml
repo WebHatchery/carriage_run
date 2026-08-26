@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: WebHatchery/macroquad-toolkit
-          ref: 2fbe68e24d3b52290527a57b235882143537c38f
+          ref: 1ea59565e144d8da4deffd187bcd6d2bb657b504
           path: macroquad-toolkit
 
       - name: Install Linux build dependencies
@@ -113,7 +113,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: WebHatchery/macroquad-toolkit
-          ref: 2fbe68e24d3b52290527a57b235882143537c38f
+          ref: 1ea59565e144d8da4deffd187bcd6d2bb657b504
           path: macroquad-toolkit
 
       - name: Setup Rust
