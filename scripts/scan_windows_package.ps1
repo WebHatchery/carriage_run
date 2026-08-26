@@ -57,7 +57,7 @@ try {
             LogName = "Microsoft-Windows-Windows Defender/Operational"
             StartTime = $scanRequestedAt.AddSeconds(-2)
             Id = 1000, 1001
-        } -ErrorAction Stop)
+        } -ErrorAction SilentlyContinue)
         $scanStarted = $events | Where-Object {
             $_.Id -eq 1000 -and $_.Message -like "*Custom Scan*" -and $_.Message -like "*$([IO.Path]::GetFileName($artifactPath))*"
         } | Sort-Object TimeCreated -Descending | Select-Object -First 1
