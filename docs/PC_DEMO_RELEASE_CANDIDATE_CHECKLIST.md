@@ -135,6 +135,11 @@ Complete each path without development tools or pre-existing saves.
 - Human final decision: GO / NO-GO
 - Human approver and timestamp:
 
+Use `PC_DEMO_KNOWN_ISSUES_DRAFT.md` for issue closeout and
+`PC_DEMO_ROLLBACK_PROCEDURE.md` for the retained-build decision and switch
+record. Player-facing troubleshooting must be reviewed from
+`PC_DEMO_SUPPORT_GUIDE_DRAFT.md` against the exact uploaded candidate.
+
 No-go remains the default while any product/authority item, blocker, exact-build
 CI gate, clean-machine critical path, five-player gate, policy/licensing gate,
 uploaded-build verification, rollback assignment, or final human approval is

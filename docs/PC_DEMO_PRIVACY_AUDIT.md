@@ -42,7 +42,7 @@ The game may create:
 | `save_<slot>_backup_1.json` through `_backup_3.json` | Rolling copies of the same campaign data | Replaced as saves rotate; deleted with the active slot through the in-game delete action |
 | `save_<slot>_corrupt.json` | A quarantined unreadable save | Created only during corruption recovery; retained for possible repair until manually deleted |
 | `carriage_run_settings.json` | Display, audio, language, accessibility, drag, and key-binding preferences | Created when settings are saved; retained until manually deleted |
-| `crash_log.txt` | Panic message and source-code location | Appended only after a native crash; never uploaded; retained until manually deleted |
+| `crash_log.txt` | Build identity, panic message, and source-code location | Appended only after a native crash; never uploaded; retained until manually deleted |
 
 These files are ordinary local JSON/text rather than encrypted personal-data
 storage. The game does not ask for a name, email address, account, precise

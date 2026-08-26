@@ -55,6 +55,11 @@ normal publishing defaults to `full`.
 Release budgets, dependency/version policy, license inventories, and the
 latest verification captures live under `docs/`.
 
+PC-demo operations are staged in the release-candidate checklist, external
+playtest packet, rollback procedure, known-issues draft, and support guide in
+`docs/`. `CHANGELOG.md` records repository milestones without implying that a
+public demo has already shipped.
+
 ## Release diagnostics
 
 Release builds keep asset and localization startup notices out of the
