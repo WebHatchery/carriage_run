@@ -11,6 +11,7 @@ mod persistence;
 
 use crate::audio::GameAudio;
 use crate::data::GameData;
+use crate::lifecycle::WindowActivity;
 use crate::localization::{font_fallbacks, Language, Localizer};
 use crate::settings::RuntimeSettings;
 use crate::state::GameSession;
@@ -37,6 +38,9 @@ pub struct Game {
     save_slots: Vec<String>,
     gamepad: GamepadInput,
     controller_connected: bool,
+    window_activity: WindowActivity,
+    input_enabled: bool,
+    exit_requested: bool,
     pub(crate) settings: RuntimeSettings,
     audio: GameAudio,
     localizer: Localizer,
@@ -109,6 +113,9 @@ impl Game {
             save_slots: Vec::new(),
             gamepad: GamepadInput::new(),
             controller_connected: false,
+            window_activity: WindowActivity::new(),
+            input_enabled: true,
+            exit_requested: false,
             settings,
             audio,
             localizer,
@@ -158,9 +165,34 @@ impl Game {
         if self.startup_error.is_some() {
             return;
         }
+        let pad = self.gamepad.capture();
+        let activity = self.window_activity.poll(self.controls_are_neutral(pad));
+        self.input_enabled = activity.input_enabled;
+        if activity.focus_lost && self.session.screen == crate::state::Screen::Playing {
+            self.session.pause_play();
+            self.notifications
+                .info("Window focus lost — game paused. Tap RESUME when ready.");
+        }
+        if pad.connected != self.controller_connected {
+            if pad.connected {
+                self.notifications.info("Controller connected");
+            } else {
+                if self.session.screen == crate::state::Screen::Playing {
+                    self.session.pause_play();
+                }
+                self.notifications
+                    .warning("Controller disconnected — reconnect it or use the visible controls.");
+            }
+        }
+        self.controller_connected = pad.connected;
         self.audio.set_screen(self.session.screen);
         self.audio.apply_settings(&self.settings);
-        self.audio.set_page_focused(true, &self.settings);
+        self.audio
+            .set_page_focused(activity.focused, &self.settings);
+        if !self.input_enabled {
+            self.events.drain().for_each(drop);
+            return;
+        }
         self.handle_global_keys();
         self.apply_pending_actions();
         if self.save_dirty && self.session.campaign.auto_save_enabled {
@@ -174,8 +206,6 @@ impl Game {
             self.autosave.reset_timer();
         }
 
-        let pad = self.gamepad.capture();
-        self.controller_connected = pad.connected;
         self.handle_gamepad(pad);
         let input = self.capture_mission_input(pad);
 
@@ -206,8 +236,8 @@ impl Game {
 
         if let Some(error) = &self.startup_error {
             let virtual_ui = begin_virtual_ui_frame(ui::LOGICAL_WIDTH, ui::LOGICAL_HEIGHT);
-            if ui::draw_recovery_screen(error, virtual_ui.mouse_position()) {
-                macroquad::miniquad::window::quit();
+            if self.input_enabled && ui::draw_recovery_screen(error, virtual_ui.mouse_position()) {
+                self.exit_requested = true;
             }
             end_virtual_ui_frame();
             self.notifications
@@ -242,8 +272,10 @@ impl Game {
             get_time(),
         );
 
-        for action in actions {
-            self.events.push(action);
+        if self.input_enabled {
+            for action in actions {
+                self.events.push(action);
+            }
         }
 
         self.notifications
@@ -258,6 +290,18 @@ impl Game {
         for action in actions {
             self.apply_action(action);
         }
+    }
+
+    pub fn request_exit(&mut self) {
+        self.exit_requested = true;
+    }
+
+    pub fn exit_requested(&self) -> bool {
+        self.exit_requested
+    }
+
+    pub fn shutdown(&mut self) -> Result<(), String> {
+        self.flush_for_shutdown()
     }
 }
 

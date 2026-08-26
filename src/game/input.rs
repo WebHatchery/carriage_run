@@ -25,21 +25,55 @@ impl Game {
             play_rect: ui::play_rect(),
             steer_left: is_key_down(self.settings.bindings.key("steer_left"))
                 || is_key_down(KeyCode::Left)
-                || pad.left
+                || pad.held_left
                 || (touch_down && ui::touch_steer_left_rect().contains(mouse)),
             steer_right: is_key_down(self.settings.bindings.key("steer_right"))
                 || is_key_down(KeyCode::Right)
-                || pad.right
+                || pad.held_right
                 || (touch_down && ui::touch_steer_right_rect().contains(mouse)),
             boost: is_key_down(self.settings.bindings.key("boost"))
                 || is_key_down(KeyCode::Up)
-                || pad.up
+                || pad.held_up
                 || (touch_down && ui::touch_boost_rect().contains(mouse)),
             brake: is_key_down(self.settings.bindings.key("brake"))
                 || is_key_down(KeyCode::Down)
-                || pad.down
+                || pad.held_down
                 || (touch_down && ui::touch_brake_rect().contains(mouse)),
         }
+    }
+
+    pub(super) fn controls_are_neutral(&self, pad: GamepadFrame) -> bool {
+        let bound_keys = [
+            "steer_left",
+            "steer_right",
+            "boost",
+            "brake",
+            "repair",
+            "save",
+            "load",
+        ];
+        let keyboard_active = bound_keys
+            .into_iter()
+            .any(|action| is_key_down(self.settings.bindings.key(action)))
+            || [KeyCode::Left, KeyCode::Right, KeyCode::Up, KeyCode::Down]
+                .into_iter()
+                .any(is_key_down);
+        let controller_active = pad.confirm
+            || pad.cancel
+            || pad.secondary
+            || pad.tertiary
+            || pad.menu
+            || pad.next
+            || pad.previous
+            || pad.up
+            || pad.down
+            || pad.left
+            || pad.right
+            || pad.held_up
+            || pad.held_down
+            || pad.held_left
+            || pad.held_right;
+        !is_mouse_button_down(MouseButton::Left) && !keyboard_active && !controller_active
     }
 
     pub(super) fn handle_global_keys(&mut self) {

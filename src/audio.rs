@@ -23,16 +23,16 @@ pub enum AudioCue {
 
 pub struct GameAudio {
     pub manager: SoundManager<AudioCue>,
-    pub screen_music: Option<Screen>,
     page_focused: bool,
     music_started: bool,
 }
 
 impl GameAudio {
+    const MUSIC_GAIN: f32 = 0.26;
+
     pub fn new() -> Self {
         Self {
             manager: SoundManager::new(),
-            screen_music: None,
             page_focused: true,
             music_started: false,
         }
@@ -64,21 +64,17 @@ impl GameAudio {
     }
 
     pub fn set_screen(&mut self, screen: Screen) {
-        if self.screen_music != Some(screen) {
-            self.screen_music = Some(screen);
+        let wants_music = screen_wants_music(screen);
+        if !wants_music && self.music_started {
+            self.manager.stop_raw(AudioCue::Music);
             self.music_started = false;
         }
-        if !self.music_started
-            && matches!(
-                screen,
-                Screen::Title | Screen::MissionMap | Screen::Playing | Screen::Journey
-            )
-        {
+        if wants_music && !self.music_started {
             self.manager.play_raw(
                 AudioCue::Music,
                 PlaySoundParams {
                     looped: true,
-                    volume: 0.26,
+                    volume: self.music_volume(),
                 },
             );
             self.music_started = true;
@@ -88,12 +84,14 @@ impl GameAudio {
     pub fn set_page_focused(&mut self, focused: bool, settings: &RuntimeSettings) {
         self.page_focused = focused;
         self.manager.visible = settings.audio_visible(focused);
+        self.sync_music_volume();
     }
 
     pub fn apply_settings(&mut self, settings: &RuntimeSettings) {
         self.manager.sfx_volume = settings.display.effective_sfx_volume();
         self.manager.music_volume = settings.display.effective_music_volume();
         self.manager.visible = settings.audio_visible(self.page_focused);
+        self.sync_music_volume();
     }
 
     pub fn ui(&self, cue: AudioCue, settings: &RuntimeSettings) {
@@ -107,6 +105,28 @@ impl GameAudio {
             intensity.clamp(0.0, 1.0) * settings.display.effective_sfx_volume(),
         );
     }
+
+    fn music_volume(&self) -> f32 {
+        if self.manager.visible {
+            self.manager.music_volume * Self::MUSIC_GAIN
+        } else {
+            0.0
+        }
+    }
+
+    fn sync_music_volume(&self) {
+        if self.music_started {
+            self.manager
+                .set_raw_volume(AudioCue::Music, self.music_volume());
+        }
+    }
+}
+
+fn screen_wants_music(screen: Screen) -> bool {
+    matches!(
+        screen,
+        Screen::Title | Screen::MissionMap | Screen::Playing | Screen::Journey
+    )
 }
 
 impl AudioCue {
@@ -151,3 +171,6 @@ impl Default for GameAudio {
         Self::new()
     }
 }
+
+#[cfg(test)]
+mod tests;

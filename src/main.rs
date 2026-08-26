@@ -8,6 +8,7 @@ mod build_info;
 mod crash;
 mod data;
 mod game;
+mod lifecycle;
 mod localization;
 mod settings;
 mod state;
@@ -46,10 +47,22 @@ async fn main() {
         return;
     }
 
+    // Route both the window close button and in-game EXIT GAME controls through
+    // the same final-save path.
+    prevent_quit();
     loop {
+        if is_quit_requested() {
+            game.request_exit();
+        }
         let dt = get_frame_time().min(0.1);
         game.update(dt);
         game.draw();
+        if game.exit_requested() {
+            if let Err(error) = game.shutdown() {
+                eprintln!("Carriage Run final save failed during shutdown: {error}");
+            }
+            break;
+        }
         next_frame().await;
     }
 }

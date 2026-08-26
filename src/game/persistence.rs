@@ -8,6 +8,13 @@ use macroquad_toolkit::persistence::{
 };
 
 impl Game {
+    pub(super) fn flush_for_shutdown(&mut self) -> Result<(), String> {
+        if should_flush_on_shutdown(self.save_dirty, self.session.campaign.auto_save_enabled) {
+            self.write_save()?;
+        }
+        Ok(())
+    }
+
     pub(super) fn start_new_campaign(&mut self) {
         let active_slot = self.session.campaign.active_save_slot.clone();
         self.session = GameSession::new(&self.data.config, self.data.first_mission_id());
@@ -171,6 +178,10 @@ impl Game {
     }
 }
 
+fn should_flush_on_shutdown(save_dirty: bool, auto_save_enabled: bool) -> bool {
+    save_dirty && auto_save_enabled
+}
+
 fn clean_slot_name(slot: &str) -> Result<String, String> {
     let cleaned: String = slot
         .chars()
@@ -185,3 +196,6 @@ fn clean_slot_name(slot: &str) -> Result<String, String> {
         Ok(cleaned)
     }
 }
+
+#[cfg(test)]
+mod tests;

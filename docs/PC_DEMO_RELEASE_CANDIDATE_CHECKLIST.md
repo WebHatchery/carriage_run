@@ -100,6 +100,8 @@ Complete each path without development tools or pre-existing saves.
   approved transfer/non-transfer policy work in the demo namespace.
 - [ ] Focus loss, audio mute/restore, window/fullscreen transitions, Alt-Tab,
   sleep/resume where available, and clean shutdown preserve valid state.
+  Record the exact-candidate results in
+  `PC_DEMO_INPUT_LIFECYCLE_VERIFICATION.md`.
 - [ ] The end-of-demo store, feedback, replay, and exit actions are correct for
   the chosen storefront and never expose unavailable full-release content.
 

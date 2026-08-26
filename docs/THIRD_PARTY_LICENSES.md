@@ -1,7 +1,7 @@
 # Third-party dependency and asset license inventory
 
 Generated 2026-08-27 from the locked carriage_run dependency closure for x86_64-pc-windows-msvc and the checked-in asset tree.
-The closure contains 52 packages: 2 local project packages and 50 third-party packages.
+The closure contains 68 packages: 2 local project packages and 66 third-party packages.
 
 ## Local project packages
 
@@ -29,14 +29,19 @@ The closure contains 52 packages: 2 local project packages and 50 third-party pa
 | equivalent | 1.0.2 | Apache-2.0 OR MIT | crates.io via Cargo.lock |
 | fdeflate | 0.3.7 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | flate2 | 1.1.9 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| fnv | 1.0.7 | Apache-2.0 / MIT | crates.io via Cargo.lock |
 | foldhash | 0.1.5 | Zlib | crates.io via Cargo.lock |
 | fontdue | 0.9.4 | MIT OR Apache-2.0 OR Zlib | crates.io via Cargo.lock |
+| gamepads | 0.1.7 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| gilrs | 0.10.10 | Apache-2.0/MIT | crates.io via Cargo.lock |
+| gilrs-core | 0.5.15 | Apache-2.0/MIT | crates.io via Cargo.lock |
 | glam | 0.27.0 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | hashbrown | 0.15.5 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | image | 0.24.9 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | itoa | 1.0.18 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | jpeg-decoder | 0.3.2 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | libm | 0.2.16 | MIT | crates.io via Cargo.lock |
+| log | 0.4.33 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | macroquad | 0.4.16 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | macroquad_macro | 0.1.8 | MIT/Apache-2.0 | crates.io via Cargo.lock |
 | memchr | 2.8.3 | Unlicense OR MIT | crates.io via Cargo.lock |
@@ -53,14 +58,25 @@ The closure contains 52 packages: 2 local project packages and 50 third-party pa
 | serde_derive | 1.0.229 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | serde_json | 1.0.151 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | simd-adler32 | 0.3.10 | MIT | crates.io via Cargo.lock |
+| syn | 2.0.119 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | syn | 3.0.3 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | toml | 0.5.11 | MIT/Apache-2.0 | crates.io via Cargo.lock |
 | ttf-parser | 0.25.1 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | unicode-ident | 1.0.24 | (MIT OR Apache-2.0) AND Unicode-3.0 | crates.io via Cargo.lock |
+| uuid | 1.24.1 | Apache-2.0 OR MIT | crates.io via Cargo.lock |
+| vec_map | 0.8.2 | MIT/Apache-2.0 | crates.io via Cargo.lock |
 | winapi | 0.3.9 | MIT/Apache-2.0 | crates.io via Cargo.lock |
+| windows | 0.58.0 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | windows_x86_64_msvc | 0.48.5 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| windows_x86_64_msvc | 0.52.6 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| windows-core | 0.58.0 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| windows-implement | 0.58.0 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| windows-interface | 0.58.0 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| windows-result | 0.2.0 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| windows-strings | 0.1.0 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | windows-sys | 0.48.0 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | windows-targets | 0.48.5 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
+| windows-targets | 0.52.6 | MIT OR Apache-2.0 | crates.io via Cargo.lock |
 | winres | 0.1.12 | MIT | crates.io via Cargo.lock |
 | zip | 0.6.6 | MIT | crates.io via Cargo.lock |
 | zmij | 1.0.23 | MIT | crates.io via Cargo.lock |

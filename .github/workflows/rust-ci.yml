@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: WebHatchery/macroquad-toolkit
-          ref: cdc4d9957f496a4e330f250106f7bec9d2ed3769
+          ref: ae5eaf4d793001230e785bd4f2dfd52c7b2fd060
           path: macroquad-toolkit
 
       - name: Install Linux build dependencies
@@ -69,6 +69,7 @@ jobs:
         shell: bash
         run: |
           test -f Cargo.toml
+          test -f Cargo.lock
           test -d assets
           test -f publish.ps1
           test -s catalog_thumbnail.png
@@ -78,20 +79,20 @@ jobs:
         run: cargo fmt --manifest-path Cargo.toml -- --check
 
       - name: Run Clippy
-        run: cargo clippy --manifest-path Cargo.toml --all-targets --all-features -- -D warnings
+        run: cargo clippy --manifest-path Cargo.toml --locked --all-targets --all-features -- -D warnings
 
       - name: Run tests
-        run: cargo test --manifest-path Cargo.toml --all-features
+        run: cargo test --manifest-path Cargo.toml --locked --all-features
 
       - name: Build WebGL release
-        run: cargo build --manifest-path Cargo.toml --release --target wasm32-unknown-unknown
+        run: cargo build --manifest-path Cargo.toml --locked --release --target wasm32-unknown-unknown
         env:
           RUSTFLAGS: "-C link-arg=--allow-undefined"
 
       - name: Verify WebGL output and budget
         shell: bash
         run: |
-          wasm_name="$(cargo metadata --manifest-path Cargo.toml --no-deps --format-version 1 | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["packages"][0]["name"].replace("-","_")+".wasm")')"
+          wasm_name="$(cargo metadata --manifest-path Cargo.toml --locked --no-deps --format-version 1 | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["packages"][0]["name"].replace("-","_")+".wasm")')"
           test -s "target/wasm32-unknown-unknown/release/${wasm_name}"
           test "$(stat -c%s "target/wasm32-unknown-unknown/release/${wasm_name}")" -le 2500000
 
@@ -111,23 +112,25 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: WebHatchery/macroquad-toolkit
-          ref: cdc4d9957f496a4e330f250106f7bec9d2ed3769
+          ref: ae5eaf4d793001230e785bd4f2dfd52c7b2fd060
           path: macroquad-toolkit
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build Windows release
-        run: cargo build --manifest-path Cargo.toml --release
+        run: cargo build --manifest-path Cargo.toml --locked --release
 
       - name: Verify Windows output, icon resource, and publisher entry point
         shell: pwsh
         run: |
-          $metadata = cargo metadata --manifest-path Cargo.toml --no-deps --format-version 1 | ConvertFrom-Json
+          $metadata = cargo metadata --manifest-path Cargo.toml --locked --no-deps --format-version 1 | ConvertFrom-Json
           $bin = @($metadata.packages[0].targets | Where-Object { $_.kind -contains "bin" } | Select-Object -First 1).name
           if (-not $bin) { $bin = $metadata.packages[0].name }
           $exePath = Join-Path "target\release" "$bin.exe"
           if (-not (Test-Path $exePath -PathType Leaf)) { throw "Missing $exePath" }
           if (-not (Test-Path "assets\packaging\carriage_run.ico" -PathType Leaf)) { throw "Missing application icon" }
           if (-not (Test-Path "publish.ps1" -PathType Leaf)) { throw "Missing publisher wrapper" }
+          if (-not (Test-Path "Cargo.lock" -PathType Leaf)) { throw "Missing standalone lockfile" }
           if (-not (Test-Path "toolkit.lock" -PathType Leaf)) { throw "Missing toolkit pin" }
+          if ((Get-Content -Raw toolkit.lock).Trim() -ne (git -C ..\macroquad-toolkit rev-parse HEAD).Trim()) { throw "Toolkit checkout does not match toolkit.lock" }

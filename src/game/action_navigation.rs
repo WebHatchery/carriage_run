@@ -55,7 +55,7 @@ impl Game {
             UiAction::ReturnTitle => self.session.return_title(),
             UiAction::PauseGame => self.session.pause_play(),
             UiAction::ResumeGame => self.session.resume_play(),
-            UiAction::ExitGame => macroquad::miniquad::window::quit(),
+            UiAction::ExitGame => self.request_exit(),
             _ => return false,
         }
         true

@@ -9,14 +9,57 @@ param(
 
 $ErrorActionPreference = "Stop"
 $gameDir = Split-Path -Parent $PSScriptRoot
+
+function Get-StandaloneDependencyEvidence([string]$Target) {
+    $tempBase = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
+    $tempRoot = [IO.Path]::GetFullPath((Join-Path $tempBase ("carriage-license-" + [Guid]::NewGuid().ToString("N"))))
+    if (-not $tempRoot.StartsWith($tempBase, [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refusing unsafe temporary dependency layout: $tempRoot"
+    }
+    $gameCopy = Join-Path $tempRoot "carriage_run"
+    $toolkitCopy = Join-Path $tempRoot "macroquad-toolkit"
+    $gameSource = Join-Path $gameCopy "src"
+    $toolkitSource = Join-Path $toolkitCopy "src"
+    try {
+        New-Item -ItemType Directory -Path $gameSource -Force | Out-Null
+        New-Item -ItemType Directory -Path $toolkitSource -Force | Out-Null
+        Copy-Item -LiteralPath (Join-Path $gameDir "Cargo.toml") -Destination (Join-Path $gameCopy "Cargo.toml")
+        Copy-Item -LiteralPath (Join-Path $gameDir "Cargo.lock") -Destination (Join-Path $gameCopy "Cargo.lock")
+        Copy-Item -LiteralPath (Join-Path (Split-Path $gameDir -Parent) "macroquad-toolkit\Cargo.toml") -Destination (Join-Path $toolkitCopy "Cargo.toml")
+        [IO.File]::WriteAllText((Join-Path $gameSource "main.rs"), "fn main() {}`n")
+        [IO.File]::WriteAllText((Join-Path $toolkitSource "lib.rs"), "")
+
+        $manifest = Join-Path $gameCopy "Cargo.toml"
+        $metadata = cargo metadata --manifest-path $manifest --locked --format-version 1 | ConvertFrom-Json
+        if ($LASTEXITCODE -ne 0) { throw "cargo metadata failed for the standalone lockfile" }
+        $treeLines = @(& cargo tree --manifest-path $manifest --locked --target $Target --edges normal,build --prefix none --format '{p}|{l}')
+        if ($LASTEXITCODE -ne 0) { throw "cargo tree failed for target $Target" }
+        [pscustomobject]@{ metadata = $metadata; tree_lines = $treeLines }
+    }
+    finally {
+        foreach ($path in @(
+            (Join-Path $gameCopy "Cargo.lock"),
+            (Join-Path $gameCopy "Cargo.toml"),
+            (Join-Path $gameSource "main.rs"),
+            (Join-Path $toolkitCopy "Cargo.toml"),
+            (Join-Path $toolkitSource "lib.rs")
+        )) {
+            if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path -Force }
+        }
+        foreach ($path in @($gameSource, $toolkitSource, $gameCopy, $toolkitCopy, $tempRoot)) {
+            if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path -Force }
+        }
+    }
+}
+
 Push-Location $gameDir
 try {
-    $metadata = cargo metadata --manifest-path (Join-Path $gameDir "Cargo.toml") --locked --format-version 1 | ConvertFrom-Json
-    # The parent workspace's unified metadata graph enables optional toolkit
-    # features used by unrelated games. `cargo tree -p` supplies the exact
-    # normal/build closure for this Windows release target instead.
-    $treeLines = @(& cargo tree -p carriage_run --locked --target $Target --edges normal,build --prefix none --format '{p}|{l}')
-    if ($LASTEXITCODE -ne 0) { throw "cargo tree failed for target $Target" }
+    # This project is normally a member of the RustGames workspace, whose root
+    # lockfile can drift independently. Recreate CI's sibling checkout layout so
+    # the inventory is proven against the tracked standalone Cargo.lock.
+    $evidence = Get-StandaloneDependencyEvidence $Target
+    $metadata = $evidence.metadata
+    $treeLines = $evidence.tree_lines
     $resolvedPackages = @($treeLines | ForEach-Object {
         $clean = $_ -replace ' \(\*\)$', ''
         $parts = $clean.Split('|', 2)
