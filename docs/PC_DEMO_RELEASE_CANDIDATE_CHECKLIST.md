@@ -33,6 +33,8 @@ release authorization.
 ## Frozen source and build inputs
 
 - [ ] The candidate comes from the recorded commit and the project tree is clean.
+  A publisher run from a changed tree is visibly marked `-dirty`, and the
+  release-manifest gate must reject it.
 - [ ] `Cargo.lock` is committed and `toolkit.lock` names the reviewed toolkit
   revision.
 - [ ] Only approved fixes entered the release branch after content freeze.

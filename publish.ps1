@@ -29,6 +29,12 @@ try {
     $env:CARRIAGE_BUILD_UTC = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     $env:CARRIAGE_BUILD_COMMIT = (& git -C $PSScriptRoot rev-parse HEAD).Trim()
     if ($LASTEXITCODE -ne 0) { throw "Could not determine the build commit." }
+    $workingTreeChanges = @(& git -C $PSScriptRoot status --porcelain --untracked-files=normal)
+    if ($LASTEXITCODE -ne 0) { throw "Could not inspect the build working tree." }
+    if ($workingTreeChanges.Count -gt 0) {
+        $env:CARRIAGE_BUILD_COMMIT = "$($env:CARRIAGE_BUILD_COMMIT)-dirty"
+        Write-Warning "Build provenance is marked dirty because the project has uncommitted files."
+    }
 
     & $rootPublisher -RustGamePublish -ProjectDir $PSScriptRoot `
         -SkipBuild:$SkipBuild `

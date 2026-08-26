@@ -6,9 +6,9 @@ fn support_lines_name_the_release_and_source_revisions() {
     let build = credits_build_line();
     assert!(version.contains(BUILD_INFO.version));
     assert!(version.contains(BUILD_INFO.channel));
-    assert!(version.contains(short_revision(BUILD_INFO.commit)));
+    assert!(version.contains(&short_revision(BUILD_INFO.commit)));
     assert!(build.contains(BUILD_INFO.built_at_utc));
-    assert!(build.contains(short_revision(BUILD_INFO.toolkit_revision)));
+    assert!(build.contains(&short_revision(BUILD_INFO.toolkit_revision)));
 }
 
 #[test]
@@ -22,4 +22,5 @@ fn diagnostic_line_keeps_full_provenance() {
 fn short_revision_tolerates_non_git_fallbacks() {
     assert_eq!(short_revision("unknown"), "unknown");
     assert_eq!(short_revision("1234567890"), "1234567");
+    assert_eq!(short_revision("1234567890-dirty"), "1234567-dirty");
 }

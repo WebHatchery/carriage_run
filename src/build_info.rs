@@ -48,6 +48,12 @@ pub fn diagnostic_line() -> String {
     )
 }
 
-fn short_revision(revision: &str) -> &str {
-    revision.get(..7).unwrap_or(revision)
+fn short_revision(revision: &str) -> String {
+    if let Some(clean_revision) = revision.strip_suffix("-dirty") {
+        return format!(
+            "{}-dirty",
+            clean_revision.get(..7).unwrap_or(clean_revision)
+        );
+    }
+    revision.get(..7).unwrap_or(revision).to_owned()
 }
