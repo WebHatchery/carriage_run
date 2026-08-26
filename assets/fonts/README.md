@@ -1,10 +1,13 @@
 # Font fallback assets
 
-The two runtime fallback files are copies of the shared
-macroquad-toolkit Rajdhani SemiBold font. They are kept under the game asset
-tree so the browser build can resolve them without depending on a host OS
-font. The toolkit's font license travels with the shared toolkit repository
-and is included in the third-party review.
+These two files are byte-identical provenance copies of the Rajdhani SemiBold
+font embedded by macroquad-toolkit. They are retained under the game asset tree
+for language and release audits; the runtime currently uses the toolkit's
+embedded copy rather than loading these paths from the packaged asset tree.
+
+Rajdhani is Copyright (c) 2014 Indian Type Foundry and licensed under the SIL
+Open Font License 1.1. The license is stored at
+`assets/licenses/OFL-Rajdhani.txt` and is included in packaged builds.
 
 German and French use latin_extended.ttf first, then english.ttf. The
 localization audit checks long strings before release.

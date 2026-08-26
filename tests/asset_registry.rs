@@ -34,8 +34,17 @@ fn asset_registry_matches_the_runtime_texture_manifest() {
         })
         .collect();
 
-    assert_eq!(registered, runtime_textures);
-    for relative in registered {
+    assert!(
+        runtime_textures.is_subset(&registered),
+        "runtime textures must all be registered"
+    );
+    let packaged_notices: BTreeSet<&str> =
+        registered.difference(&runtime_textures).copied().collect();
+    assert_eq!(
+        packaged_notices,
+        BTreeSet::from(["assets/licenses/OFL-Rajdhani.txt"])
+    );
+    for relative in &registered {
         assert!(
             root.join(relative).is_file(),
             "registered runtime asset is missing: {relative}"
