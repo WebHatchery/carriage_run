@@ -87,7 +87,7 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     let mut y = panel.y + 48.0;
     toggle_row(
         "fullscreen",
-        "Fullscreen",
+        &ctx.localization.display("settings.fullscreen"),
         settings.display.fullscreen,
         panel,
         y,
@@ -95,11 +95,19 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
         actions,
     );
     y += 22.0;
-    toggle_row("vsync", "VSync", settings.vsync, panel, y, mouse, actions);
+    toggle_row(
+        "vsync",
+        &ctx.localization.display("settings.vsync"),
+        settings.vsync,
+        panel,
+        y,
+        mouse,
+        actions,
+    );
     y += 22.0;
     toggle_row(
         "colorblind_safe",
-        "Colorblind palette",
+        &ctx.localization.display("settings.colorblind"),
         settings.colorblind_safe,
         panel,
         y,
@@ -109,7 +117,7 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     y += 22.0;
     toggle_row(
         "reduced_motion",
-        "Reduced motion",
+        &ctx.localization.display("settings.reduced_motion"),
         settings.reduced_motion,
         panel,
         y,
@@ -119,7 +127,7 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     y += 22.0;
     toggle_row(
         "drag_toggle",
-        "Drag: toggle",
+        &ctx.localization.display("settings.drag_mode"),
         matches!(
             settings.drag_preference,
             crate::settings::DragPreference::Toggle
@@ -132,7 +140,7 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     y += 22.0;
     cycle_row(
         "resolution",
-        "Resolution",
+        &ctx.localization.display("settings.resolution"),
         &settings.resolution,
         panel,
         y,
@@ -142,7 +150,7 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     y += 22.0;
     cycle_row(
         "fps",
-        "FPS cap",
+        &ctx.localization.display("settings.fps_cap"),
         &settings.fps_cap.to_string(),
         panel,
         y,
@@ -152,7 +160,7 @@ fn draw_runtime_preferences(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     y += 22.0;
     cycle_row(
         "text_size",
-        "Text size",
+        &ctx.localization.display("settings.text_size"),
         &format!("{:.1}x", settings.text_size),
         panel,
         y,

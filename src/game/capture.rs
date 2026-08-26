@@ -1,14 +1,23 @@
 //! Scene seeding for the headless screenshot harness (see `run_capture`).
 
 use super::Game;
+use crate::localization::Language;
 use crate::state::{
     CodexTab, ConfirmPrompt, ExpeditionRunSummary, Journey, MissionRecord, MissionReport,
     MissionRun, Screen,
 };
 
+#[cfg(test)]
+mod tests;
+
 impl Game {
     /// Seed a specific scene for the screenshot harness.
     pub fn begin_capture_scene(&mut self, scene: &str) {
+        let (scene, language) = localized_scene(scene);
+        if let Some(language) = language {
+            self.localizer.set_language(language);
+            self.settings.language = language.id().to_owned();
+        }
         match scene {
             "map" => {
                 // Seed a few cleared routes so the header progress reads
@@ -223,6 +232,15 @@ impl Game {
             }
         }
     }
+}
+
+fn localized_scene(scene: &str) -> (&str, Option<Language>) {
+    for language in Language::ALL {
+        if let Some(base) = scene.strip_suffix(&format!("_{}", language.id())) {
+            return (base, Some(language));
+        }
+    }
+    (scene, None)
 }
 
 /// A partway-through expedition: two legs cleared, carriage worn down, gold

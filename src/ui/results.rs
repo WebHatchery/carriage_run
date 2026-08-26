@@ -81,7 +81,7 @@ pub(super) fn draw_results(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<U
             .get(&result.mission_id)
             .map(|mission| mission.bonus_objective.as_str())
             .unwrap_or("");
-        let row_y = panel.y + 158.0;
+        let row_y = panel.y + 170.0;
         draw_ui_text_ex(
             "Bonus",
             panel.x + 64.0,
@@ -126,7 +126,7 @@ pub(super) fn draw_results(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<U
     // Full-width outcome line (its value is a full sentence, too wide to column).
     let grid_top = panel.y
         + if result.bonus_met.is_some() {
-            202.0
+            214.0
         } else {
             172.0
         };

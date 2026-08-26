@@ -14,6 +14,8 @@ pub enum Language {
 }
 
 impl Language {
+    pub const ALL: [Self; 3] = [Self::English, Self::German, Self::French];
+
     pub fn id(self) -> &'static str {
         match self {
             Self::English => "en",
@@ -107,6 +109,15 @@ impl Localizer {
             .filter(|(_, text)| text.chars().count() > 72)
             .map(|(key, text)| format!("{key} is {} characters", text.chars().count()))
             .collect()
+    }
+
+    #[cfg(test)]
+    fn table_for(&self, language: Language) -> &std::collections::HashMap<String, String> {
+        match language {
+            Language::English => &self.table.en,
+            Language::German => &self.table.de,
+            Language::French => &self.table.fr,
+        }
     }
 
     pub fn missing_keys(&self) -> impl Iterator<Item = &str> {

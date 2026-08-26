@@ -119,7 +119,9 @@ Complete each path without development tools or pre-existing saves.
   using `PC_DEMO_PLAYTEST_PACKET.md`; repeated comprehension failures are fixed
   or explicitly accepted.
 - [ ] English, German, and French pass automated key/glyph/overflow checks and
-  human review of the actual demo screens.
+  fluent human review of the actual demo screens using
+  `PC_DEMO_LOCALIZATION_REVIEW_PACKET.md`. Advertise only the languages whose
+  complete approved demo slice passes.
 - [ ] Store screenshots and trailer footage come from this demo build, meet the
   selected storefront's current requirements, and contain no diagnostics.
 - [ ] Store copy, system requirements, accessibility/language claims, content

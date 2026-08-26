@@ -272,7 +272,12 @@ fn draw_title(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
         Rect::new(86.0, 236.0, 390.0, 420.0)
     };
     draw_panel(panel, true);
-    draw_section_label("Main Menu", panel.x + 26.0, panel.y + 24.0, panel.w - 52.0);
+    draw_section_label(
+        &ctx.localization.display("menu.main_menu"),
+        panel.x + 26.0,
+        panel.y + 24.0,
+        panel.w - 52.0,
+    );
 
     let mut y = panel.y + 58.0;
     if virtual_button(
@@ -297,7 +302,7 @@ fn draw_title(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
     y += 54.0;
     if virtual_button(
         Rect::new(panel.x + 26.0, y, panel.w - 52.0, 42.0),
-        "Load Game",
+        &ctx.localization.display("menu.load_game"),
         ctx.save_exists,
         ButtonTone::Secondary,
         mouse,
@@ -331,7 +336,7 @@ fn draw_title(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
             (panel.w - 64.0) * 0.5,
             42.0,
         ),
-        "Credits",
+        &ctx.localization.display("menu.credits"),
         true,
         ButtonTone::Secondary,
         mouse,
@@ -341,7 +346,7 @@ fn draw_title(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
     y += 54.0;
     if virtual_button(
         Rect::new(panel.x + 26.0, y, panel.w - 52.0, 42.0),
-        "Exit Game",
+        &ctx.localization.display("menu.exit_game"),
         true,
         ButtonTone::Muted,
         mouse,

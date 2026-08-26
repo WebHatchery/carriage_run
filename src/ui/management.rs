@@ -226,7 +226,7 @@ pub(super) fn draw_pause(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiA
     y += 56.0;
     if virtual_button(
         Rect::new(panel.x + 78.0, y, panel.w - 156.0, 42.0),
-        "Settings",
+        &ctx.localization.display("menu.settings"),
         true,
         ButtonTone::Primary,
         mouse,
