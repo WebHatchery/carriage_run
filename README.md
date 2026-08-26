@@ -60,6 +60,11 @@ playtest packet, rollback procedure, known-issues draft, and support guide in
 `docs/`. `CHANGELOG.md` records repository milestones without implying that a
 public demo has already shipped.
 
+After a clean publish, `scripts/smoke_windows_package.ps1` exercises the actual
+Windows ZIP from extraction paths containing spaces and non-ASCII characters.
+The supported-PC planning floor and external machine evidence form are in
+`docs/PC_DEMO_WINDOWS_COMPATIBILITY_BASELINE.md`.
+
 ## Release diagnostics
 
 Release builds keep asset and localization startup notices out of the

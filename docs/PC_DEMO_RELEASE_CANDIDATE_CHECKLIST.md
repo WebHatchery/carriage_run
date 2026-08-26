@@ -54,6 +54,7 @@ cargo test --all-features
 .\publish.ps1
 .\scripts\audit_privacy.ps1
 .\scripts\write_release_manifest.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
+.\scripts\smoke_windows_package.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
 ```
 
 - [ ] Formatting passes.
@@ -65,6 +66,8 @@ cargo test --all-features
 - [ ] The publisher completes and produces the uniquely named demo archive.
 - [ ] Privacy engineering audit passes.
 - [ ] Release-manifest validation passes; archive and per-file hashes are saved.
+- [ ] The packaged-build path smoke passes from space and non-ASCII extraction
+  paths, verifies embedded identity, and its JSON result is retained.
 - [ ] Hosted CI is green for the exact commit. Link the run:
 
 ## Package inspection and retention
@@ -101,7 +104,8 @@ Complete each path without development tools or pre-existing saves.
 ## Compatibility and safety evidence
 
 - [ ] Test on a clean supported Windows installation using a standard
-  non-administrator account.
+  non-administrator account using the matrix and result fields in
+  `PC_DEMO_WINDOWS_COMPATIBILITY_BASELINE.md`.
 - [ ] Test paths containing spaces and non-ASCII characters.
 - [ ] Cover the approved minimum and recommended hardware, integrated and
   discrete graphics where available, and common controller families.
