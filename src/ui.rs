@@ -8,6 +8,7 @@ mod gameplay_actors;
 mod gameplay_feedback;
 mod gameplay_hazards;
 mod gameplay_hud;
+mod gameplay_hud_art;
 mod gameplay_road;
 mod journey;
 mod loadout;
@@ -19,6 +20,8 @@ mod records;
 mod results;
 mod settings_aux;
 mod sprites;
+#[cfg(test)]
+mod tests;
 mod upgrade_visuals;
 mod upgrades;
 mod widgets;
@@ -132,19 +135,30 @@ pub fn play_rect() -> Rect {
 }
 
 pub fn touch_steer_left_rect() -> Rect {
-    Rect::new(186.0, 622.0, 92.0, 64.0)
+    Rect::new(186.0, 520.0, 92.0, 64.0)
 }
 
 pub fn touch_steer_right_rect() -> Rect {
-    Rect::new(286.0, 622.0, 92.0, 64.0)
+    Rect::new(286.0, 520.0, 92.0, 64.0)
 }
 
 pub fn touch_brake_rect() -> Rect {
-    Rect::new(946.0, 622.0, 106.0, 64.0)
+    Rect::new(946.0, 520.0, 106.0, 64.0)
 }
 
 pub fn touch_boost_rect() -> Rect {
-    Rect::new(1064.0, 622.0, 106.0, 64.0)
+    Rect::new(1064.0, 520.0, 106.0, 64.0)
+}
+
+pub fn touch_controls_contain(point: Vec2) -> bool {
+    [
+        touch_steer_left_rect(),
+        touch_steer_right_rect(),
+        touch_brake_rect(),
+        touch_boost_rect(),
+    ]
+    .into_iter()
+    .any(|rect| rect.contains(point))
 }
 
 pub fn draw_game_ui(ctx: UiContext<'_>) -> Vec<UiAction> {

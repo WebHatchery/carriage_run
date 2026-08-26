@@ -11,9 +11,14 @@ impl Game {
     pub(super) fn capture_mission_input(&self, pad: GamepadFrame) -> MissionInput {
         let mouse = virtual_mouse_position(ui::LOGICAL_WIDTH, ui::LOGICAL_HEIGHT);
         let touch_down = is_mouse_button_down(MouseButton::Left);
+        let touch_control_pressed =
+            is_mouse_button_pressed(MouseButton::Left) && ui::touch_controls_contain(mouse);
         MissionInput {
             mouse,
-            pressed: is_mouse_button_pressed(MouseButton::Left),
+            // Touch controls now sit over the road instead of obscuring the
+            // bottom HUD. Do not also begin a carriage/guard drag when one is
+            // pressed; raw down/release state still finishes an existing drag.
+            pressed: is_mouse_button_pressed(MouseButton::Left) && !touch_control_pressed,
             down: touch_down,
             released: is_mouse_button_released(MouseButton::Left),
             repair_pressed: is_key_pressed(self.settings.bindings.key("repair")),

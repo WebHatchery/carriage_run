@@ -12,8 +12,8 @@ pub(super) fn draw_touch_controls(run: &MissionRun, colorblind_safe: bool) {
     let info = Color::new(palette[3].0, palette[3].1, palette[3].2, 0.96);
     let warning = Color::new(palette[1].0, palette[1].1, palette[1].2, 0.96);
     for (rect, label, color) in [
-        (touch_steer_left_rect(), "STEER ◀", info),
-        (touch_steer_right_rect(), "STEER ▶", info),
+        (touch_steer_left_rect(), "LEFT", info),
+        (touch_steer_right_rect(), "RIGHT", info),
         (touch_brake_rect(), "BRAKE", info),
         (touch_boost_rect(), "BOOST", warning),
     ] {
@@ -23,7 +23,7 @@ pub(super) fn draw_touch_controls(run: &MissionRun, colorblind_safe: bool) {
     draw_ui_text_ex(
         "Touch controls",
         186.0,
-        614.0,
+        touch_steer_left_rect().y - 8.0,
         macroquad_toolkit::prelude::TextStyle::new(12.0, MUTED).params(),
     );
     if run.is_in_night_stretch() {
@@ -45,7 +45,7 @@ fn draw_guided_first_route(run: &MissionRun) {
         return;
     }
     let lessons = [
-        "Tap STEER ◀ or STEER ▶ to keep the wagon on the road.",
+        "Tap LEFT or RIGHT to keep the wagon on the road.",
         "A WAVE INCOMING warning gives you time to prepare.",
         "Drag a guard on the road to issue a move order.",
         "Tap a guard to switch between Roam and Hold.",

@@ -51,7 +51,10 @@ pub(super) fn draw_gameplay(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<
     draw_particles(run);
     draw_float_texts(run);
     draw_drag_feedback(run, mouse);
-    set_default_camera();
+    // The world uses a shake-aware logical camera. Restore the toolkit's
+    // letterboxed virtual UI camera—not Macroquad's physical-pixel default—so
+    // the HUD scales with every window size like the menu screens do.
+    ctx.ui.begin();
     draw_gameplay_hud(ctx, run, mouse, actions);
 }
 
