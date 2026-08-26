@@ -85,9 +85,10 @@ jobs:
         run: cargo test --manifest-path Cargo.toml --locked --all-features
 
       - name: Build WebGL release
-        run: cargo build --manifest-path Cargo.toml --locked --release --target wasm32-unknown-unknown
-        env:
-          RUSTFLAGS: "-C link-arg=--allow-undefined"
+        shell: bash
+        run: |
+          export CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS="--remap-path-prefix=${GITHUB_WORKSPACE}=source --remap-path-prefix=${CARGO_HOME}=cargo-home -C link-arg=--import-undefined -C link-arg=--allow-undefined"
+          cargo build --manifest-path Cargo.toml --locked --release --target wasm32-unknown-unknown
 
       - name: Verify WebGL output and budget
         shell: bash
@@ -119,7 +120,11 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build Windows release
-        run: cargo build --manifest-path Cargo.toml --locked --release
+        shell: pwsh
+        run: |
+          $profile = [Environment]::GetFolderPath("UserProfile")
+          $env:CARGO_BUILD_RUSTFLAGS = "--remap-path-prefix=$env:GITHUB_WORKSPACE=source --remap-path-prefix=$profile=build-user"
+          cargo build --manifest-path Cargo.toml --locked --release
 
       - name: Verify Windows output, icon resource, and publisher entry point
         shell: pwsh

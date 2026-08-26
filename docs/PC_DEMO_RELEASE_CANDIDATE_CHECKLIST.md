@@ -53,6 +53,7 @@ cargo test --all-features
 .\scripts\audit_asset_provenance.ps1
 .\publish.ps1
 .\scripts\audit_privacy.ps1
+.\scripts\audit_release_paths.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip
 .\scripts\write_release_manifest.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
 .\scripts\smoke_windows_package.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
 .\scripts\scan_windows_package.ps1 -Artifact dist\carriage_run_demo_windows_x86_64_<version>.zip -Channel demo
@@ -66,6 +67,8 @@ cargo test --all-features
   translation, and storefront AI-disclosure attestation is attached.
 - [ ] The publisher completes and produces the uniquely named demo archive.
 - [ ] Privacy engineering audit passes.
+- [ ] Release path audit passes with no checkout, Cargo-home, or build-account
+  fragments in packaged executable files.
 - [ ] Release-manifest validation passes; archive and per-file hashes are saved.
 - [ ] The packaged-build path smoke passes from space and non-ASCII extraction
   paths, verifies embedded identity, and its JSON result is retained.

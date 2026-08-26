@@ -14,9 +14,14 @@ evidence that an environment works.
 | DEMO-004 | Human testing required | Onboarding and feel | Five independent target-player sessions, including uncoached keyboard and controller paths, have not been completed. |
 | DEMO-005 | Human review required | Languages | Automated English/German/French data checks pass, but fluent human meaning, tone, idiom, clipping, and offensiveness review remains outstanding. |
 | DEMO-006 | Publisher/legal review required | Public claims | Support contact, privacy URL, credits, asset provenance, store copy/media, content answers, and legal representations are not approved. |
-| DEMO-007 | Open engineering risk | Build disclosure | The native release binary contains compiler source paths, including build-account path fragments. No runtime collection occurs, but path remapping must be addressed or explicitly accepted before public release. |
 
 The release recommendation remains **NO-GO** while any row above is unresolved.
+
+## Resolved engineering risks
+
+| ID | Resolution | Regression evidence |
+| --- | --- | --- |
+| DEMO-007 | Release publishing remaps workspace and build-profile roots while retaining source-relative panic locations. | Run `scripts/audit_release_paths.ps1` against every exact candidate; it rejects known checkout roots and generic Windows/Linux user-profile paths in packaged executables. |
 
 ## Candidate issue format
 

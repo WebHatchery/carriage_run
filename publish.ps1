@@ -24,6 +24,8 @@ if (-not (Test-Path $rootPublisher)) {
 $previousChannel = [Environment]::GetEnvironmentVariable("CARRIAGE_BUILD_CHANNEL", "Process")
 $previousBuildUtc = [Environment]::GetEnvironmentVariable("CARRIAGE_BUILD_UTC", "Process")
 $previousCommit = [Environment]::GetEnvironmentVariable("CARRIAGE_BUILD_COMMIT", "Process")
+$previousBuildRustflags = [Environment]::GetEnvironmentVariable("CARGO_BUILD_RUSTFLAGS", "Process")
+$previousWasmRustflags = [Environment]::GetEnvironmentVariable("CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS", "Process")
 try {
     $env:CARRIAGE_BUILD_CHANNEL = $Channel
     $env:CARRIAGE_BUILD_UTC = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -35,6 +37,29 @@ try {
         $env:CARRIAGE_BUILD_COMMIT = "$($env:CARRIAGE_BUILD_COMMIT)-dirty"
         Write-Warning "Build provenance is marked dirty because the project has uncommitted files."
     }
+
+    # Panic locations are useful, but absolute build roots disclose local account
+    # and checkout names. Keep source-relative diagnostics while making release
+    # artifacts reproducible across developer and CI machines.
+    $workspaceRoot = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
+    $buildProfile = [Environment]::GetFolderPath("UserProfile")
+    $remapFlags = @("--remap-path-prefix=$workspaceRoot=source")
+    if (-not [string]::IsNullOrWhiteSpace($buildProfile)) {
+        $remapFlags += "--remap-path-prefix=$buildProfile=build-user"
+    }
+    $nativeFlags = @()
+    if (-not [string]::IsNullOrWhiteSpace($previousBuildRustflags)) {
+        $nativeFlags += $previousBuildRustflags
+    }
+    $nativeFlags += $remapFlags
+    $wasmFlags = @()
+    if (-not [string]::IsNullOrWhiteSpace($previousWasmRustflags)) {
+        $wasmFlags += $previousWasmRustflags
+    }
+    $wasmFlags += $remapFlags
+    $wasmFlags += @("-C", "link-arg=--import-undefined", "-C", "link-arg=--allow-undefined")
+    $env:CARGO_BUILD_RUSTFLAGS = $nativeFlags -join " "
+    $env:CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS = $wasmFlags -join " "
 
     & $rootPublisher -RustGamePublish -ProjectDir $PSScriptRoot `
         -SkipBuild:$SkipBuild `
@@ -71,4 +96,6 @@ finally {
     $env:CARRIAGE_BUILD_CHANNEL = $previousChannel
     $env:CARRIAGE_BUILD_UTC = $previousBuildUtc
     $env:CARRIAGE_BUILD_COMMIT = $previousCommit
+    $env:CARGO_BUILD_RUSTFLAGS = $previousBuildRustflags
+    $env:CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS = $previousWasmRustflags
 }
