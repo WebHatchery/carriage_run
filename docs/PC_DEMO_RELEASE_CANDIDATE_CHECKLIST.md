@@ -140,6 +140,9 @@ Complete each path without development tools or pre-existing saves.
   selected storefront's current requirements, and contain no diagnostics. Use
   `PC_DEMO_VISUAL_CAPTURE_EVIDENCE.md` as the engineering baseline, not as proof
   that the current full-game captures are approved demo media.
+- [ ] Steam exports pass `scripts/audit_steam_assets.ps1`, use the current
+  official templates, and complete the manual creative/policy review in
+  `PC_DEMO_STEAM_ASSET_PLAN.md`.
 - [ ] Store copy, system requirements, accessibility/language claims, content
   descriptions, asset provenance, license record, privacy statement, and any
   EULA/support/refund copy match the shipped build and have human approval.

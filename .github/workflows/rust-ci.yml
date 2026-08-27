@@ -143,3 +143,7 @@ jobs:
       - name: Verify playtest triage safeguards
         shell: pwsh
         run: .\scripts\verify_playtest_triage.ps1
+
+      - name: Verify Steam asset specification safeguards
+        shell: pwsh
+        run: .\scripts\verify_steam_asset_audit.ps1
