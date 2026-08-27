@@ -11,18 +11,19 @@ Status meanings:
 - **External / human** — cannot be established from this repository or host.
 - **Not started** — required work has no adequate current evidence.
 
-The release recommendation remains **NO-GO**. The current artifact is still a
-`full`-channel package, not a contained public demo.
+The release recommendation remains **NO-GO** for publication. A contained
+Option A demo candidate can now be built locally, but storefront, transfer,
+external playtest, clean-machine, hardware, legal, and upload gates remain.
 
 ## 1. Demo product
 
 | Requirement | Status | Evidence / next gate |
 | --- | --- | --- |
-| One-page brief and viable slices | Prepared / gated | `PC_DEMO_PRODUCT_BRIEF.md` recommends Option A and contains the approval block. |
-| Storefront, audience, promise, length, slice, ending, transfer policy | External / human | Publisher approval is absent. |
-| Explicit demo build, isolated identity/save, containment tests | Not started | Implementation must follow the approved product decision. |
-| End-of-demo replay/store/feedback/exit screen | Not started | Destinations and boundary are unapproved. |
-| Full-only menu/content treatment | Not started | Depends on the approved contained slice. |
+| One-page brief and viable slices | Complete locally | Option A was approved in Codex on 2026-08-27 and is recorded in `PC_DEMO_PRODUCT_BRIEF.md`. |
+| Storefront, audience, promise, length, slice, ending, transfer policy | Prepared / gated | Slice is approved; every other publisher decision remains unapproved. |
+| Explicit demo build, isolated identity/save, containment tests | Complete locally | Cargo `demo` feature embeds only four contracts and uses `carriage_run_demo` / `demo_campaign` / `0.1.0-demo1`; full mode remains unchanged. |
+| End-of-demo replay/store/feedback/exit screen | Prepared / gated | Bonebridge victory opens the verified replay/title/exit screen. Store and feedback actions remain absent until destinations are approved. |
+| Full-only menu/content treatment | Complete locally | Demo UI/action gates remove expedition, records, cosmetics, extra carriages, and save-slot management. |
 
 ## 2. Release engineering
 
@@ -30,7 +31,7 @@ The release recommendation remains **NO-GO**. The current artifact is still a
 | --- | --- | --- |
 | Correct hosted toolkit layout and exact pin | Complete locally | Workflow uses the sibling layout and `toolkit.lock`; local native/WebAssembly gates pass. Hosted runs remain unobserved until pushed. |
 | Full-channel Windows/WebGL publisher | Complete locally | `publish.ps1` produces provenance-labelled packages and local preview deployment. |
-| Demo-specific artifact name and containment | Not started | Requires the approved demo boundary. |
+| Demo-specific artifact name and containment | Complete locally | `publish.ps1 -Channel demo`, `scripts/package_demo.ps1`, and `scripts/verify_demo_contract.ps1`. |
 | Runtime-only package, manifest, checksum, provenance | Complete locally | Package validator and manifest scripts cover the current full channel. |
 | Absolute build-path removal | Complete locally | `scripts/audit_release_paths.ps1`. |
 | Space/non-ASCII and non-elevated launch smoke | Complete locally | `scripts/smoke_windows_package.ps1`. |
@@ -45,7 +46,7 @@ The release recommendation remains **NO-GO**. The current artifact is still a
 | Windows 100/125/150/200% DPI and multi-monitor behavior | External / human | Physical Windows matrix required. |
 | Keyboard/controller complete paths and reconnect | Prepared / gated | Native polling/lifecycle logic and tests exist; named real hardware paths remain untested. |
 | Focus, audio, Alt-Tab, fullscreen transitions, shutdown | Prepared / gated | Deterministic lifecycle tests and manual packet exist; physical packaged-session evidence remains required. |
-| Save lifecycle and corruption recovery | Prepared / gated | Unit coverage, backups, recovery UI, and fixtures exist; exact contained-demo migration/package path awaits the demo build. |
+| Save lifecycle and corruption recovery | Prepared / gated | Demo namespace isolation is implemented and unit-checked; packaged manual save/recovery checks remain. |
 | PC-visible tutorial wording | Complete locally | `PC_DEMO_CONTROL_INSTRUCTION_AUDIT.md` and PC-neutral road controls. |
 | Localization automation and fluent review | Prepared / gated | Key/glyph/overflow automation and review packet exist; public claim remains English-only until fluent review. |
 | Selected-slice balance/session distribution | Not started | The slice and length target require approval; full-game simulation is not a substitute. |
@@ -76,7 +77,7 @@ The release recommendation remains **NO-GO**. The current artifact is still a
 | Requirement | Status | Evidence / next gate |
 | --- | --- | --- |
 | Store copy, FAQ, language/accessibility/content boundaries | Prepared / gated | Steam-focused `PC_DEMO_STOREFRONT_COPY_DRAFT.md`; claims remain contingent. |
-| Five exact-demo 1920×1080 screenshots | Not started | Full-game engineering captures cannot become demo media before containment. |
+| Five exact-demo 1920×1080 screenshots | In progress | `docs/verification/demo_end.png` is captured from the demo binary; four additional clean gameplay/store captures remain. |
 | Current Steam dimensions and export audit | Complete locally | Dated spec, `PC_DEMO_STEAM_ASSET_PLAN.md`, audit, and synthetic CI verifier. |
 | Approved capsule/library artwork | Not started | Requires approved source art, title treatment, current templates, and creative review. |
 | Gameplay trailer | Prepared / gated | `PC_DEMO_TRAILER_STORYBOARD_DRAFT.md`; no approved demo footage/music/export exists. |
@@ -94,16 +95,14 @@ The release recommendation remains **NO-GO**. The current artifact is still a
 
 | Requirement | Status | Evidence / next gate |
 | --- | --- | --- |
-| Frozen reproducible demo RC and change log | Not started | No demo build exists. |
+| Frozen reproducible demo RC and change log | Prepared / gated | Local demo packaging exists; a clean committed candidate, full regression record, and freeze decision remain. |
 | Go/no-go report and rollback recommendation | Prepared / gated | `PC_DEMO_GO_NO_GO_DRAFT.md` correctly recommends NO-GO on a historical full-channel baseline. |
 | Uploaded/public build verification | Not started | Requires authorized store configuration and release candidate. |
 | Launch monitoring and hotfix operation | Prepared / gated | Procedures and response drafts exist; owners, accounts, schedule, and public build are absent. |
 
-## Next executable decision
+## Next executable work
 
-The highest-leverage next implementation is the contained demo mode. It must not
-begin until the publisher approves or amends the product brief's storefront,
-Option A slice, 25–40 minute target, and no-transfer policy. Once approved, the
-agent can implement the demo feature/build identity, save namespace, mission
-containment, end screen, package tests, selected-slice simulations, and exact
-demo media capture in that order.
+Run selected-slice balance/session simulations, exercise the packaged save and
+branch path, capture four more exact-demo gameplay images, and prepare a clean
+candidate ledger. Store/feedback links, transfer promises, public copy, upload,
+and publication stay blocked on their specific publisher decisions.

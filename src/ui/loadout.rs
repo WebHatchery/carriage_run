@@ -57,13 +57,15 @@ pub(super) fn draw_loadout(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<U
     ) {
         actions.push(UiAction::OpenMap);
     }
-    if virtual_button(
-        Rect::new(872.0, 642.0, 154.0, 42.0),
-        "Expedition",
-        true,
-        ButtonTone::Primary,
-        mouse,
-    ) {
+    if !crate::release_mode::is_demo()
+        && virtual_button(
+            Rect::new(872.0, 642.0, 154.0, 42.0),
+            "Expedition",
+            true,
+            ButtonTone::Primary,
+            mouse,
+        )
+    {
         actions.push(UiAction::OpenOutfitter);
     }
     if virtual_button(

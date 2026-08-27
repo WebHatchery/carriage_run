@@ -16,6 +16,11 @@ impl Game {
                 self.session.cancel_confirm();
                 self.start_new_campaign();
             }
+            UiAction::RequestDemoReplay => self.session.request_demo_replay(),
+            UiAction::ReplayDemo => {
+                self.session.cancel_confirm();
+                self.start_new_campaign();
+            }
             UiAction::DismissConfirm => self.session.cancel_confirm(),
             UiAction::ConfirmBuyChassis(id) => {
                 self.session.cancel_confirm();

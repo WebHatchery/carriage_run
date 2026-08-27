@@ -14,7 +14,7 @@ pub struct BuildInfo {
 
 pub const BUILD_INFO: BuildInfo = BuildInfo {
     version: env!("CARGO_PKG_VERSION"),
-    channel: env!("CARRIAGE_BUILD_CHANNEL"),
+    channel: crate::release_mode::channel(),
     commit: env!("CARRIAGE_BUILD_COMMIT"),
     built_at_utc: env!("CARRIAGE_BUILD_UTC"),
     toolkit_revision: env!("CARRIAGE_TOOLKIT_REVISION"),

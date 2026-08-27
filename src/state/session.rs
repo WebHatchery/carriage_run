@@ -62,6 +62,12 @@ impl GameSession {
         }
     }
 
+    pub fn request_demo_replay(&mut self) {
+        if crate::release_mode::is_demo() {
+            self.pending_confirm = Some(ConfirmPrompt::ReplayDemo);
+        }
+    }
+
     /// Dismiss any pending confirmation without acting on it.
     pub fn cancel_confirm(&mut self) {
         self.pending_confirm = None;
@@ -181,7 +187,9 @@ impl GameSession {
     }
 
     pub fn select_mission(&mut self, id: &str) {
-        self.campaign.selected_mission_id = id.to_owned();
+        if crate::release_mode::allows_mission(id) {
+            self.campaign.selected_mission_id = id.to_owned();
+        }
     }
 
     pub fn select_route_choice(&mut self, data: &GameData, route_id: &str) -> bool {
@@ -389,6 +397,9 @@ impl GameSession {
     }
 
     pub fn start_selected_mission(&mut self, data: &GameData) -> bool {
+        if !crate::release_mode::allows_mission(&self.campaign.selected_mission_id) {
+            return false;
+        }
         let Some(mission) = data.missions.get(&self.campaign.selected_mission_id) else {
             return false;
         };
@@ -457,7 +468,12 @@ impl GameSession {
                 self.apply_report(report.clone());
                 self.result = Some(report.clone());
                 self.mission = None;
-                self.screen = Screen::Results;
+                self.screen =
+                    if crate::release_mode::reaches_demo_end(&report.mission_id, report.success) {
+                        Screen::DemoEnd
+                    } else {
+                        Screen::Results
+                    };
             }
             Some(report)
         } else {

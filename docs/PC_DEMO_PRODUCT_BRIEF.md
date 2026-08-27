@@ -1,6 +1,6 @@
 # Carriage Run — PC demo product brief
 
-Status: **proposed for publisher approval**  
+Status: **Option A slice approved; remaining publisher decisions pending**
 Prepared: 2026-08-27  
 Platform: public Windows PC demo  
 Planning baseline: Steam, with itch.io still available as an alternative
@@ -159,7 +159,7 @@ The publisher should edit this block or provide the answers to the agent. A
 checked choice is authorization to implement that product direction, not to
 upload, publish, spend money, accept agreements, or make legal attestations.
 
-- Demo slice: [ ] Option A  [ ] Option B  [ ] Option C
+- Demo slice: [x] Option A  [ ] Option B  [ ] Option C
 - Storefront baseline: [ ] Steam  [ ] itch.io  [ ] both
 - Save policy: [ ] no transfer  [ ] transfer promised
 - Target audience wording approved: [ ] yes
@@ -167,4 +167,9 @@ upload, publish, spend money, accept agreements, or make legal attestations.
 - Full-game store/wishlist URL supplied: ______________________________
 - Feedback destination supplied: _____________________________________
 - Target public date or window: ______________________________________
-- Publisher name and approval date: __________________________________
+- Publisher name and approval date: User approval recorded in Codex, 2026-08-27
+
+Approval scope note: this authorizes implementation and validation of the
+Option A content boundary only. Storefront selection, public links, save
+transfer promises, audience copy, timing promise, upload, and publication
+remain unapproved.

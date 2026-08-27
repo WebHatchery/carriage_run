@@ -42,6 +42,7 @@ pub enum Screen {
     Playing,
     Paused,
     Results,
+    DemoEnd,
     Journey,
     Outfitter,
     Records,
@@ -56,6 +57,7 @@ pub enum Screen {
 pub enum ConfirmPrompt {
     /// Starting a new campaign would overwrite the current autosave.
     NewCampaign,
+    ReplayDemo,
     BuyChassis(String),
     AbandonExpedition,
 }

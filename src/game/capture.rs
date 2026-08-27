@@ -117,6 +117,9 @@ impl Game {
                 });
                 self.session.screen = Screen::Results;
             }
+            "demo_end" => {
+                self.session.screen = Screen::DemoEnd;
+            }
             "confirm" => {
                 // Title screen with the New Campaign overwrite prompt staged.
                 self.session.return_title();

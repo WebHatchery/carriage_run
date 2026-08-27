@@ -4,9 +4,22 @@ use super::*;
 fn embedded_data_loads() {
     let data = GameData::load().unwrap();
 
-    assert_eq!(data.config.game_name, "carriage_run");
+    assert_eq!(data.config.game_name, crate::release_mode::app_id());
     assert!(data.missions.contains("muddy_road"));
-    assert!(data.missions.contains("siege_supply"));
+    assert_eq!(
+        data.missions.len(),
+        if cfg!(feature = "demo") { 4 } else { 30 }
+    );
+    assert_eq!(
+        data.missions.contains("siege_supply"),
+        !cfg!(feature = "demo")
+    );
+    if cfg!(feature = "demo") {
+        assert!(data
+            .missions
+            .ids()
+            .all(|id| crate::release_mode::DEMO_MISSION_IDS.contains(&id.as_str())));
+    }
     assert!(data.upgrades.contains("carriage_armor"));
     assert!(data.upgrades.contains("spiked_hubs"));
     assert!(data.upgrades.contains("warding_lantern"));

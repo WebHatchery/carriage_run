@@ -11,6 +11,7 @@ mod game;
 mod lifecycle;
 mod localization;
 mod performance;
+mod release_mode;
 mod settings;
 mod state;
 mod ui;
@@ -29,7 +30,7 @@ fn window_conf() -> Conf {
 #[macroquad::main(window_conf)]
 async fn main() {
     // Install early so even the startup data-load panic leaves a crash log.
-    crash::install_panic_hook("carriage_run");
+    crash::install_panic_hook(release_mode::app_id());
     eprintln!("Carriage Run build: {}", build_info::diagnostic_line());
 
     let mut game = Game::new().await;

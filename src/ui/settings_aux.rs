@@ -14,8 +14,34 @@ pub(super) const STEERING_BINDING_LABEL: &str = "Steer (LEFT / RIGHT)";
 pub(super) const RECOVERY_BINDING_LABEL: &str = "Actions (REPAIR / Save / Load)";
 
 pub(super) fn draw_settings_aux(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
-    draw_save_slots(ctx, mouse, actions);
+    if crate::release_mode::is_demo() {
+        draw_demo_save_notice();
+    } else {
+        draw_save_slots(ctx, mouse, actions);
+    }
     draw_runtime_preferences(ctx, mouse, actions);
+}
+
+fn draw_demo_save_notice() {
+    let panel = Rect::new(640.0, 122.0, 600.0, 248.0);
+    draw_panel(panel, true);
+    draw_section_label("Demo Save", panel.x + 18.0, panel.y + 22.0, panel.w - 36.0);
+    draw_text_block(
+        "This demo autosaves to its own isolated campaign. It never lists, overwrites, migrates, or quarantines saves from the full game.",
+        panel.x + 24.0,
+        panel.y + 72.0,
+        panel.w - 48.0,
+        96.0,
+        17.0,
+        4.0,
+        INK,
+    );
+    draw_ui_text_ex(
+        "Progress transfer remains unpromised.",
+        panel.x + 24.0,
+        panel.bottom() - 38.0,
+        TextStyle::new(15.0, GOLD).params(),
+    );
 }
 
 fn draw_save_slots(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {

@@ -8,6 +8,25 @@ impl Game {
     pub(super) fn apply_action(&mut self, action: UiAction) {
         self.audio
             .ui(crate::audio::AudioCue::UiConfirm, &self.settings);
+        if crate::release_mode::is_demo()
+            && matches!(
+                &action,
+                UiAction::OpenCarriages
+                    | UiAction::OpenCosmetics
+                    | UiAction::OpenOutfitter
+                    | UiAction::OpenRecords
+                    | UiAction::StartExpedition
+                    | UiAction::StartDailyExpedition
+                    | UiAction::SelectSaveSlot(_)
+                    | UiAction::CreateSaveSlot(_)
+                    | UiAction::RenameSaveSlot(_)
+                    | UiAction::DeleteSaveSlot
+            )
+        {
+            self.notifications
+                .info("That feature is reserved for the full game");
+            return;
+        }
         if self.apply_navigation_action(&action)
             || self.apply_settings_action(&action)
             || self.apply_expedition_action(&action)

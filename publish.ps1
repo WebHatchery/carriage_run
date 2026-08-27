@@ -16,6 +16,14 @@ param(
 $ErrorActionPreference = "Stop"
 $rootPublisher = Join-Path (Split-Path $PSScriptRoot -Parent) "publish.ps1"
 
+if ($Channel -eq "demo") {
+    if ($WebGLOnly -or $DeployOnly -or $Production -or $FTP) {
+        throw "The approved demo boundary permits a local Windows candidate only; deployment and WebGL remain gated."
+    }
+    & (Join-Path $PSScriptRoot "scripts\package_demo.ps1") -SkipBuild:$SkipBuild
+    exit $LASTEXITCODE
+}
+
 if (-not (Test-Path $rootPublisher)) {
     Write-Error "RustGames root publisher not found: $rootPublisher"
     exit 1

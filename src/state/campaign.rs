@@ -5,7 +5,11 @@ use crate::data::{MissionDef, RouteChoiceDef};
 
 impl CampaignState {
     pub fn is_mission_unlocked(&self, mission: &MissionDef) -> bool {
-        self.campaign_rank >= mission.unlock_level
+        crate::release_mode::allows_demo_branch(
+            &mission.id,
+            self.is_mission_completed("bandit_bend"),
+            self.is_mission_completed("courier_deadline"),
+        ) && self.campaign_rank >= mission.unlock_level
             && mission
                 .prerequisite_missions
                 .iter()
@@ -20,6 +24,13 @@ impl CampaignState {
     /// True when a mission is still locked but only one requirement away from
     /// unlocking, so the routes screen can tease it instead of hiding it.
     pub fn is_mission_near_unlock(&self, mission: &MissionDef) -> bool {
+        if !crate::release_mode::allows_demo_branch(
+            &mission.id,
+            self.is_mission_completed("bandit_bend"),
+            self.is_mission_completed("courier_deadline"),
+        ) {
+            return false;
+        }
         if self.is_mission_unlocked(mission) {
             return false;
         }

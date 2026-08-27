@@ -3,6 +3,10 @@ name = "carriage_run"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []
+demo = []
+
 [dependencies]
 macroquad = "0.4"
 macroquad-toolkit = { path = "../macroquad-toolkit" }

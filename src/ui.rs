@@ -3,6 +3,7 @@
 mod carriage;
 mod carriages;
 mod cosmetics;
+mod demo_end;
 mod gameplay;
 mod gameplay_actors;
 mod gameplay_feedback;
@@ -47,6 +48,8 @@ pub const LOGICAL_HEIGHT: f32 = 720.0;
 pub enum UiAction {
     NewCampaign,
     RequestNewCampaign,
+    RequestDemoReplay,
+    ReplayDemo,
     DismissConfirm,
     ConfirmBuyChassis(String),
     RequestAbandonExpedition,
@@ -177,6 +180,7 @@ pub fn draw_game_ui(ctx: UiContext<'_>) -> Vec<UiAction> {
         Screen::Playing => gameplay::draw_gameplay(&ctx, mouse, &mut actions),
         Screen::Paused => management::draw_pause(&ctx, mouse, &mut actions),
         Screen::Results => draw_results(&ctx, mouse, &mut actions),
+        Screen::DemoEnd => demo_end::draw_demo_end(&ctx, mouse, &mut actions),
         Screen::Journey => journey::draw_journey(&ctx, mouse, &mut actions),
         Screen::Outfitter => outfitter::draw_outfitter(&ctx, mouse, &mut actions),
         Screen::Records => records::draw_records(&ctx, mouse, &mut actions),
@@ -530,6 +534,15 @@ fn draw_confirm_dialog(
             ],
             "Overwrite Save",
             UiAction::NewCampaign,
+        ),
+        ConfirmPrompt::ReplayDemo => (
+            "Replay the Demo?",
+            [
+                "This resets progress in the separate demo save.",
+                "Your full-game saves are never changed.",
+            ],
+            "Reset Demo",
+            UiAction::ReplayDemo,
         ),
         ConfirmPrompt::BuyChassis(id) => (
             "Buy this chassis?",

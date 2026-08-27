@@ -82,13 +82,15 @@ pub(super) fn draw_shop(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAc
     ) {
         actions.push(UiAction::OpenUpgrades);
     }
-    if virtual_button(
-        Rect::new(440.0, 592.0, 160.0, 42.0),
-        "Carriages",
-        true,
-        ButtonTone::Positive,
-        mouse,
-    ) {
+    if !crate::release_mode::is_demo()
+        && virtual_button(
+            Rect::new(440.0, 592.0, 160.0, 42.0),
+            "Carriages",
+            true,
+            ButtonTone::Positive,
+            mouse,
+        )
+    {
         actions.push(UiAction::OpenCarriages);
     }
 }

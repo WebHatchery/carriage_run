@@ -8,7 +8,12 @@ use serde::{Deserialize, Serialize};
 
 const GAME_CONFIG_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/game_config.json");
+#[cfg(not(feature = "demo"))]
 const MISSIONS_JSON: &str = macroquad_toolkit::include_json_str!("../assets/data/missions.json");
+#[cfg(feature = "demo")]
+const MISSIONS_JSON: &str =
+    macroquad_toolkit::include_json_str!("../assets/data/missions_demo.json");
+#[cfg(not(feature = "demo"))]
 const EXTENDED_MISSIONS_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/missions_act2_act3.json");
 const UPGRADES_JSON: &str = macroquad_toolkit::include_json_str!("../assets/data/upgrades.json");
@@ -392,12 +397,18 @@ impl GameData {
     }
 
     pub fn load() -> Result<Self, String> {
-        let config = load_embedded_json_labeled("game_config", GAME_CONFIG_JSON)?;
-        let mut missions = DataRegistry::from_embedded_json(MISSIONS_JSON, "id")?;
-        missions.merge(DataRegistry::from_embedded_json(
-            EXTENDED_MISSIONS_JSON,
-            "id",
-        )?);
+        let mut config: GameConfig = load_embedded_json_labeled("game_config", GAME_CONFIG_JSON)?;
+        crate::release_mode::apply_identity(&mut config);
+        let missions = DataRegistry::from_embedded_json(MISSIONS_JSON, "id")?;
+        #[cfg(not(feature = "demo"))]
+        let missions = {
+            let mut missions = missions;
+            missions.merge(DataRegistry::from_embedded_json(
+                EXTENDED_MISSIONS_JSON,
+                "id",
+            )?);
+            missions
+        };
         let upgrades = DataRegistry::from_embedded_json(UPGRADES_JSON, "id")?;
         let chassis = DataRegistry::from_embedded_json(CARRIAGES_JSON, "id")?;
         let relics = DataRegistry::from_embedded_json(RELICS_JSON, "id")?;

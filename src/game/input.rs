@@ -92,6 +92,7 @@ impl Game {
                 Screen::Playing => self.events.push(UiAction::PauseGame),
                 Screen::Paused => self.events.push(UiAction::ResumeGame),
                 Screen::Results => self.events.push(UiAction::OpenMap),
+                Screen::DemoEnd => self.events.push(UiAction::ReturnTitle),
                 Screen::Settings if self.session.mission.is_some() => {
                     self.events.push(UiAction::ResumeGame)
                 }
@@ -121,6 +122,7 @@ impl Game {
             } else if pad.confirm {
                 match self.session.pending_confirm.clone() {
                     Some(ConfirmPrompt::NewCampaign) => self.events.push(UiAction::NewCampaign),
+                    Some(ConfirmPrompt::ReplayDemo) => self.events.push(UiAction::ReplayDemo),
                     Some(ConfirmPrompt::BuyChassis(id)) => {
                         self.events.push(UiAction::ConfirmBuyChassis(id))
                     }
@@ -146,6 +148,7 @@ impl Game {
                 Screen::Playing => self.events.push(UiAction::PauseGame),
                 Screen::Paused => self.events.push(UiAction::ResumeGame),
                 Screen::Results => self.events.push(UiAction::OpenMap),
+                Screen::DemoEnd => self.events.push(UiAction::ReturnTitle),
                 Screen::Settings if self.session.mission.is_some() => {
                     self.events.push(UiAction::ResumeGame)
                 }
@@ -185,6 +188,7 @@ impl Game {
             Screen::Loadout => self.events.push(UiAction::BeginMission),
             Screen::Paused => self.events.push(UiAction::ResumeGame),
             Screen::Results => self.events.push(UiAction::OpenMap),
+            Screen::DemoEnd => self.events.push(UiAction::RequestDemoReplay),
             Screen::Settings => self.events.push(if self.session.mission.is_some() {
                 UiAction::ResumeGame
             } else {
