@@ -1,5 +1,10 @@
 # Carriage Run — AI-agent work for the first PC demo
 
+> This file preserves the 2026-08-26 audit and work definition. Several findings
+> have since been repaired or prepared. Use `PC_DEMO_AGENT_PROGRESS.md` for the
+> reconciled current status and evidence; do not treat the historical blocker
+> wording below as the live release decision.
+
 Audit date: 2026-08-26  
 Scope: a public **Windows PC demo**, not the full commercial release, and no
 Linux, macOS, console, or browser release. Steam is the planning baseline;
@@ -281,4 +286,3 @@ The agent should recommend **no-go** until all of these are true:
   library images: <https://partner.steamgames.com/doc/store/assets>
 - itch.io recommends Butler for versioned platform uploads and updates:
   <https://itch.io/docs/itch/integrating/quickstart.html>
-
