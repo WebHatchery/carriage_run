@@ -45,10 +45,23 @@ $builtAtUtc = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $priorChannel = $env:CARRIAGE_BUILD_CHANNEL
 $priorCommit = $env:CARRIAGE_BUILD_COMMIT
 $priorUtc = $env:CARRIAGE_BUILD_UTC
+$priorRustflags = $env:CARGO_BUILD_RUSTFLAGS
 try {
     $env:CARRIAGE_BUILD_CHANNEL = "demo"
     $env:CARRIAGE_BUILD_COMMIT = $recordedCommit
     $env:CARRIAGE_BUILD_UTC = $builtAtUtc
+    $workspaceRoot = [IO.Path]::GetFullPath((Split-Path $gameDir -Parent))
+    $buildProfile = [Environment]::GetFolderPath("UserProfile")
+    $remapFlags = @("--remap-path-prefix=$workspaceRoot=source")
+    if (-not [string]::IsNullOrWhiteSpace($buildProfile)) {
+        $remapFlags += "--remap-path-prefix=$buildProfile=build-user"
+    }
+    $nativeFlags = @()
+    if (-not [string]::IsNullOrWhiteSpace($priorRustflags)) {
+        $nativeFlags += $priorRustflags
+    }
+    $nativeFlags += $remapFlags
+    $env:CARGO_BUILD_RUSTFLAGS = $nativeFlags -join " "
     if (-not $SkipBuild) {
         Push-Location $gameDir
         try {
@@ -62,6 +75,7 @@ finally {
     $env:CARRIAGE_BUILD_CHANNEL = $priorChannel
     $env:CARRIAGE_BUILD_COMMIT = $priorCommit
     $env:CARRIAGE_BUILD_UTC = $priorUtc
+    $env:CARGO_BUILD_RUSTFLAGS = $priorRustflags
 }
 
 $exePath = Join-Path $targetDir "release\carriage_run.exe"
