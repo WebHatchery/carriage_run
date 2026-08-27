@@ -49,7 +49,7 @@ external playtest, clean-machine, hardware, legal, and upload gates remain.
 | Save lifecycle and corruption recovery | Prepared / gated | Demo namespace isolation is implemented and unit-checked; packaged manual save/recovery checks remain. |
 | PC-visible tutorial wording | Complete locally | `PC_DEMO_CONTROL_INSTRUCTION_AUDIT.md` and PC-neutral road controls. |
 | Localization automation and fluent review | Prepared / gated | Key/glyph/overflow automation and review packet exist; public claim remains English-only until fluent review. |
-| Selected-slice balance/session distribution | Not started | The slice and length target require approval; full-game simulation is not a substitute. |
+| Selected-slice balance/session distribution | Prepared / gated | A 480-run Option A route matrix and regression corridor exist in `PC_DEMO_BALANCE_REPORT.md`; human session timing and the public length claim remain unapproved. |
 
 ## 4. QA and evidence support
 
@@ -102,7 +102,7 @@ external playtest, clean-machine, hardware, legal, and upload gates remain.
 
 ## Next executable work
 
-Run selected-slice balance/session simulations, exercise the packaged save and
-branch path, capture four more exact-demo gameplay images, and prepare a clean
-candidate ledger. Store/feedback links, transfer promises, public copy, upload,
-and publication stay blocked on their specific publisher decisions.
+Exercise the packaged save and branch path, capture four more exact-demo
+gameplay images, and prepare a clean candidate ledger. Store/feedback links,
+transfer promises, public copy, upload, and publication stay blocked on their
+specific publisher decisions.

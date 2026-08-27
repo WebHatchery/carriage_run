@@ -42,6 +42,10 @@ clean.
 - Full and demo warnings-denied lint: passed.
 - Demo identity/containment/fork/finale unit tests: passed.
 - Demo embedded-data test: passed with exactly four missions.
+- Option A balance matrix: 480 deterministic route runs passed the standard
+  completion/duration regression corridor; raw CSV and interpretation are in
+  `docs/verification/demo_balance_report.csv` and
+  `PC_DEMO_BALANCE_REPORT.md`.
 - Standard `publish.ps1` full Windows/WebGL validation: passed, preserving the
   full build behavior.
 - Demo package contract verifier: passed on the generated local archive.

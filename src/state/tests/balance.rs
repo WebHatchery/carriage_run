@@ -22,6 +22,7 @@ pub(super) struct SimResult {
     pub(super) hazards: u32,
     pub(super) reward: i64,
     pub(super) penalty: i64,
+    pub(super) elapsed: f32,
 }
 
 #[derive(Clone, Copy)]
@@ -103,8 +104,16 @@ fn input(policy: DriverPolicy, run: &MissionRun) -> MissionInput {
 }
 
 pub(super) fn simulate(data: &GameData, case: SimCase<'_>) -> SimResult {
+    let campaign = max_campaign(data, case.chassis, case.frame);
+    simulate_with_campaign(data, case, campaign)
+}
+
+pub(super) fn simulate_with_campaign(
+    data: &GameData,
+    case: SimCase<'_>,
+    mut campaign: CampaignState,
+) -> SimResult {
     let mission = data.missions.get(case.mission).unwrap();
-    let mut campaign = max_campaign(data, case.chassis, case.frame);
     campaign.difficulty_preset = case.difficulty;
     if let Some(route) = mission.route_choices.get(case.route) {
         campaign.select_route_choice(mission, &route.id);
@@ -139,6 +148,7 @@ pub(super) fn simulate(data: &GameData, case: SimCase<'_>) -> SimResult {
         hazards: report.hazards_encountered,
         reward: report.reward,
         penalty: report.gold_penalty,
+        elapsed: report.elapsed,
     }
 }
 

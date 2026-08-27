@@ -4,6 +4,8 @@ mod balance;
 mod balance_expedition;
 mod balance_report;
 mod chassis;
+#[cfg(feature = "demo")]
+mod demo_balance_report;
 mod expedition;
 mod playtest_saves;
 mod progression;
