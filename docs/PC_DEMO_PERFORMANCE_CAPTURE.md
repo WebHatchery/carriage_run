@@ -61,6 +61,25 @@ Consequently, a low CPU p95 does not prove 60 FPS, a minimum GPU, or a supported
 PC specification. Those claims still require the external-machine matrix in
 `PC_DEMO_WINDOWS_COMPATIBILITY_BASELINE.md`.
 
+## Current clean regression baseline
+
+Captured on 2026-08-27 from source
+`62d332bdafcd0e102d28ebec2d9795a47d6baeed`, toolkit
+`1ea59565e144d8da4deffd187bcd6d2bb657b504`, and Windows archive SHA-256
+`4f530265afb7ebd2c5ddaa632b7e25b1994e565be5b11316b75d5d444a5bb2c1`.
+The host was a Ryzen 7 5800X with an RTX 4080 SUPER on Windows 11 Pro Insider
+Preview. Values are not transferable to a minimum-PC claim.
+
+| Case | Requested outer window | Measured drawable | Worst scene steady combined CPU p95 | Sampled / OS peak working set |
+| --- | ---: | ---: | ---: | ---: |
+| 720p | 1280×720 | 1264×681 | 0.796 ms | 311.7 / 313.9 MiB |
+| 1080p | 1920×1080 | 1904×1022 | 0.697 ms | 597.3 / 597.3 MiB |
+| Wide | 1920×800 | 1904×761 | 0.806 ms | 644.7 / 644.7 MiB |
+
+The wide batch had the largest recorded working set and CPU p95 in this run.
+That is an observation for later same-host comparisons, not evidence of a leak
+or a failure threshold.
+
 ## Review procedure
 
 1. Retain the combined JSON with the exact RC commit and package hash.
