@@ -152,6 +152,8 @@ Complete each path without development tools or pre-existing saves.
 - Changed evidence since the last RC:
 - Rollback trigger, procedure, owner, and last known-good build:
 - Support and first-week monitoring owner/coverage:
+- Approved launch, tester, survey, creator, patch-note, and support copy from
+  `PC_DEMO_COMMUNICATIONS_DRAFT.md`:
 - Engineering recommendation: GO / NO-GO
 - Human final decision: GO / NO-GO
 - Human approver and timestamp:

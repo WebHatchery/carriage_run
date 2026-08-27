@@ -210,6 +210,10 @@ description.]
 
 ## Demo announcement draft
 
+See `PC_DEMO_COMMUNICATIONS_DRAFT.md` for the guarded tester invitation,
+feedback survey, social variants, creator outreach, patch-note template, and
+first-week support responses that accompany this store-facing announcement.
+
 ### Headline
 
 Carriage Run is opening the road for its first PC demo
