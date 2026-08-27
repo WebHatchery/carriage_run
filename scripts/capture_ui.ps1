@@ -17,6 +17,7 @@ param(
     [int]$WindowWidth = 0,
     [int]$WindowHeight = 0,
     [string]$OutputDir = "docs\verification",
+    [string]$ProcessReportPath,
     [switch]$SkipBuild,
     [switch]$Release,
     [switch]$Fullscreen
@@ -28,4 +29,5 @@ $shared = Join-Path (Split-Path -Parent $gameDir) "macroquad-toolkit\scripts\cap
 
 & $shared -GameDir $gameDir -Prefix "CARRIAGE" -Scenes $Scenes -Frames $Frames `
     -WindowWidth $WindowWidth -WindowHeight $WindowHeight -OutputDir $OutputDir `
-    -SkipBuild:$SkipBuild -Release:$Release -Fullscreen:$Fullscreen
+    -ProcessReportPath $ProcessReportPath -SkipBuild:$SkipBuild -Release:$Release `
+    -Fullscreen:$Fullscreen
