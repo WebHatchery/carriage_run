@@ -12,7 +12,7 @@ param(
     [ValidateSet("full", "demo")]
     [string]$Channel = "full",
     [string]$Output,
-    [string]$BuildInfo = "dist\carriage_run_build_info.json"
+    [string]$BuildInfo
 )
 
 $ErrorActionPreference = "Stop"
@@ -52,7 +52,13 @@ $outputPath = if ($Output) {
     Join-Path $artifactDirectory "${artifactBaseName}_manifest.json"
 }
 $checksumPath = "${artifactPath}.sha256"
-$buildInfoPath = Resolve-GamePath $BuildInfo
+$buildInfoPath = Resolve-GamePath $(if ($BuildInfo) {
+    $BuildInfo
+} elseif ($Channel -eq "demo") {
+    "dist\carriage_run_demo_build_info.json"
+} else {
+    "dist\carriage_run_build_info.json"
+})
 if (-not (Test-Path -LiteralPath $buildInfoPath -PathType Leaf)) {
     throw "Missing publisher build record: $buildInfoPath. Run .\publish.ps1 first."
 }
