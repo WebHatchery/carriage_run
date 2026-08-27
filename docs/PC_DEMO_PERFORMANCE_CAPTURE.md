@@ -14,15 +14,22 @@ From the project directory:
 
 The script builds the Windows release through the project publisher, then runs
 deterministic `gameplay`, `map`, and `settings` scenes for 300 frames each at
-1280×720, 1920×1080, and 2560×1080. It writes captures and raw per-case timing
-and process-memory records beneath `dist/performance/`, plus a combined
-machine-labelled record at
+requested 1280×720, 1920×1080, and wide 1920×800 outer-window sizes. It writes
+captures and raw per-case timing and process-memory records beneath
+`dist/performance/`, plus a combined machine-labelled record at
 `dist/performance/carriage_run_performance_capture.json`.
 
 Use `-SkipBuild` only after publishing the same source state. The script accepts
 an explicitly labelled `<HEAD>-dirty` development capture, rejects any other
 provenance mismatch, and rejects incomplete sample counts. Only a clean commit
 is valid release-candidate evidence.
+
+Windows decorations can make the drawable surface smaller than the requested
+outer window, so each case records both sizes. The runner also rejects duplicate
+drawable surfaces; this prevents an oversized request capped by the active
+monitor from masquerading as a distinct ultrawide benchmark. Exact native
+1920×1080 framebuffer evidence is handled separately by
+`PC_DEMO_VISUAL_CAPTURE_EVIDENCE.md`.
 
 ## What the numbers mean
 

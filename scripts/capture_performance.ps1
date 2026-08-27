@@ -26,7 +26,7 @@ if (-not $SkipBuild) {
 $cases = @(
     [pscustomobject]@{ Name = "720p"; Width = 1280; Height = 720 },
     [pscustomobject]@{ Name = "1080p"; Width = 1920; Height = 1080 },
-    [pscustomobject]@{ Name = "ultrawide"; Width = 2560; Height = 1080 }
+    [pscustomobject]@{ Name = "wide"; Width = 1920; Height = 800 }
 )
 $previousOutput = [Environment]::GetEnvironmentVariable("CARRIAGE_PERFORMANCE_OUTPUT", "Process")
 try {
@@ -63,6 +63,7 @@ $expectedCommit = $head
 $workingTreeChanges = @(& git -C $gameDir status --porcelain --untracked-files=normal)
 if ($LASTEXITCODE -ne 0) { throw "Could not inspect the source working tree." }
 if ($workingTreeChanges.Count -gt 0) { $expectedCommit = "$head-dirty" }
+$drawableSurfaces = New-Object System.Collections.Generic.HashSet[string]
 for ($index = 0; $index -lt $reports.Count; $index++) {
     $report = $reports[$index]
     $processReport = $processReports[$index]
@@ -76,6 +77,19 @@ for ($index = 0; $index -lt $reports.Count; $index++) {
             throw "Incomplete timing sample for $($scene.scene) at $($scene.width)x$($scene.height)."
         }
     }
+    $surfaceSizes = @($report.scenes | ForEach-Object { "$($_.width)x$($_.height)" } | Sort-Object -Unique)
+    if ($surfaceSizes.Count -ne 1) {
+        throw "Scenes in the $($case.Name) batch used inconsistent drawable surfaces: $($surfaceSizes -join ', ')."
+    }
+    if (-not $drawableSurfaces.Add($surfaceSizes[0])) {
+        throw "The $($case.Name) request was clamped to duplicate drawable surface $($surfaceSizes[0]); choose a monitor-fitting shape."
+    }
+    $drawableParts = $surfaceSizes[0].Split('x')
+    $report | Add-Member -NotePropertyName label -NotePropertyValue $case.Name
+    $report | Add-Member -NotePropertyName requested_width -NotePropertyValue $case.Width
+    $report | Add-Member -NotePropertyName requested_height -NotePropertyValue $case.Height
+    $report | Add-Member -NotePropertyName drawable_width -NotePropertyValue ([int]$drawableParts[0])
+    $report | Add-Member -NotePropertyName drawable_height -NotePropertyValue ([int]$drawableParts[1])
     if ($processReport.scenes -ne $Scenes.Count -or
         $processReport.frames_per_scene -ne $Frames -or
         $processReport.requested_width -ne $case.Width -or
@@ -109,6 +123,7 @@ $combined = [ordered]@{
     }
     interpretation = "CPU update and draw-command submission only; not GPU presentation or frame pacing"
     process_memory_interpretation = "Whole capture-process working set; not Rust heap, leak detection, or long-session evidence"
+    window_interpretation = "Requested outer-window sizes and measured drawable surfaces are both recorded; Windows decorations can make them differ"
     cases = $reports
     process_memory_cases = $processReports
 }
