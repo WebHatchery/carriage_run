@@ -3,9 +3,10 @@
 use super::Game;
 use crate::localization::Language;
 use crate::state::{
-    CodexTab, ConfirmPrompt, ExpeditionRunSummary, Journey, MissionRecord, MissionReport,
-    MissionRun, Screen,
+    CodexTab, ConfirmPrompt, ExpeditionRunSummary, Journey, MissionInput, MissionRecord,
+    MissionReport, MissionRun, Screen,
 };
+use macroquad::prelude::{vec2, Rect};
 
 #[cfg(test)]
 mod tests;
@@ -22,11 +23,16 @@ impl Game {
             "map" => {
                 // Seed a few cleared routes so the header progress reads
                 // non-zero and more of the map is unlocked.
-                for (id, stars) in [
-                    ("muddy_road", 3),
-                    ("bandit_bend", 2),
-                    ("courier_deadline", 3),
-                ] {
+                let cleared = if crate::release_mode::is_demo() {
+                    vec![("muddy_road", 3)]
+                } else {
+                    vec![
+                        ("muddy_road", 3),
+                        ("bandit_bend", 2),
+                        ("courier_deadline", 3),
+                    ]
+                };
+                for (id, stars) in cleared {
                     self.session.campaign.records.insert(
                         id.to_owned(),
                         MissionRecord {
@@ -120,6 +126,10 @@ impl Game {
             "demo_end" => {
                 self.session.screen = Screen::DemoEnd;
             }
+            "bandit_gameplay" => self.seed_capture_mission("bandit_bend", 0),
+            "courier_gameplay" => self.seed_capture_mission("courier_deadline", 1),
+            "bonebridge_gameplay" => self.seed_capture_mission("bonebridge_pass", 0),
+            "bonebridge_crypt_gameplay" => self.seed_capture_mission("bonebridge_pass", 1),
             "confirm" => {
                 // Title screen with the New Campaign overwrite prompt staged.
                 self.session.return_title();
@@ -240,6 +250,39 @@ impl Game {
                 }
             }
         }
+    }
+
+    fn seed_capture_mission(&mut self, mission_id: &str, route_index: usize) {
+        let Some(mission) = self.data.missions.get(mission_id) else {
+            self.session.open_map();
+            return;
+        };
+        if let Some(route) = mission.route_choices.get(route_index) {
+            self.session
+                .campaign
+                .select_route_choice(mission, &route.id);
+        }
+        let mut run = MissionRun::new(mission, &self.session.campaign);
+        let input = MissionInput {
+            mouse: vec2(640.0, 520.0),
+            pressed: false,
+            down: false,
+            released: false,
+            repair_pressed: false,
+            play_rect: Rect::new(0.0, 0.0, 1280.0, 720.0),
+            steer_left: false,
+            steer_right: false,
+            boost: true,
+            brake: false,
+        };
+        for _ in 0..480 {
+            run.handle_input(input);
+            if run.update(mission, 1.0 / 60.0).is_some() {
+                break;
+            }
+        }
+        self.session.mission = Some(run);
+        self.session.screen = Screen::Playing;
     }
 }
 

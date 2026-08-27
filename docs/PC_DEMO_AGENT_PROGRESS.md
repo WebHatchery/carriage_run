@@ -77,7 +77,7 @@ external playtest, clean-machine, hardware, legal, and upload gates remain.
 | Requirement | Status | Evidence / next gate |
 | --- | --- | --- |
 | Store copy, FAQ, language/accessibility/content boundaries | Prepared / gated | Steam-focused `PC_DEMO_STOREFRONT_COPY_DRAFT.md`; claims remain contingent. |
-| Five exact-demo 1920×1080 screenshots | In progress | `docs/verification/demo_end.png` is captured from the demo binary; four additional clean gameplay/store captures remain. |
+| Five exact-demo 1920×1080 screenshots | Prepared / gated | Eight clean demo-build captures (including four live contract states) pass exact dimensions and visual review in `PC_DEMO_SCREENSHOT_EVIDENCE.md`; storefront selection and human creative approval remain. |
 | Current Steam dimensions and export audit | Complete locally | Dated spec, `PC_DEMO_STEAM_ASSET_PLAN.md`, audit, and synthetic CI verifier. |
 | Approved capsule/library artwork | Not started | Requires approved source art, title treatment, current templates, and creative review. |
 | Gameplay trailer | Prepared / gated | `PC_DEMO_TRAILER_STORYBOARD_DRAFT.md`; no approved demo footage/music/export exists. |

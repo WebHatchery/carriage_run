@@ -49,8 +49,8 @@ clean.
 - Standard `publish.ps1` full Windows/WebGL validation: passed, preserving the
   full build behavior.
 - Demo package contract verifier: passed on the generated local archive.
-- End screen captured from a demo-feature release binary at
-  `docs/verification/demo_end.png`.
+- Eight exact 1920×1080 screens were captured from a demo-feature release
+  binary and visually reviewed; see `PC_DEMO_SCREENSHOT_EVIDENCE.md`.
 
 ## Deliberately unresolved
 

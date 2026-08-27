@@ -168,7 +168,10 @@ impl Game {
         let pad = self.gamepad.capture();
         let activity = self.window_activity.poll(self.controls_are_neutral(pad));
         self.input_enabled = activity.input_enabled;
-        if activity.focus_lost && self.session.screen == crate::state::Screen::Playing {
+        if activity.focus_lost
+            && self.session.screen == crate::state::Screen::Playing
+            && !macroquad_toolkit::capture::capture_requested("CARRIAGE")
+        {
             self.session.pause_play();
             self.notifications
                 .info("Window focus lost — game paused. Tap RESUME when ready.");

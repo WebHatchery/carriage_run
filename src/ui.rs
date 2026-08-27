@@ -267,6 +267,14 @@ fn recovery_exit_rect(panel: Rect) -> Rect {
 
 fn draw_title(ctx: &UiContext<'_>, mouse: Vec2, actions: &mut Vec<UiAction>) {
     let using_title_art = draw_title_art(ctx);
+    if crate::release_mode::is_demo() {
+        draw_badge(
+            Rect::new(LOGICAL_WIDTH - 208.0, 36.0, 156.0, 34.0),
+            "PC DEMO",
+            Color::new(0.18, 0.12, 0.04, 0.96),
+            UI_GOLD,
+        );
+    }
     if !using_title_art {
         draw_menu_backdrop(0.0);
         draw_crest(Rect::new(62.0, 42.0, 112.0, 106.0));
