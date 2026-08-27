@@ -6,9 +6,12 @@ Status: local engineering evidence; not approved storefront media
 ## Result
 
 The deterministic scene harness captured the eight authored release screens at
-desktop (1280×720), touch-sized (960×540), and native fullscreen (1920×1080)
-viewports. Every fullscreen file was read back from disk and verified as exactly
-1920×1080 before it replaced the matching image in `docs/verification/`.
+requested desktop (1280×720 outer window), requested touch-sized (960×540 outer
+window), and native fullscreen (1920×1080 framebuffer) viewports. On this host,
+the windowed drawable images are 1264×681 and 944×501 respectively because the
+requested dimensions include Windows decoration. Every fullscreen file was read
+back from disk and verified as exactly 1920×1080 before it replaced the matching
+image in `docs/verification/`.
 
 The refreshed evidence verifies that:
 

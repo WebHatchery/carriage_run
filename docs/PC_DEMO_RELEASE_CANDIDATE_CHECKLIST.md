@@ -117,7 +117,9 @@ Complete each path without development tools or pre-existing saves.
 - [ ] Cover the approved minimum and recommended hardware, integrated and
   discrete graphics where available, and common controller families.
 - [ ] Cover 100%, 125%, 150%, and 200% display scaling plus 16:9, 16:10,
-  ultrawide, and minimum-window layouts.
+  ultrawide, and minimum-window layouts. Use `PC_DEMO_WINDOW_LAYOUT_AUDIT.md`
+  for automated aspect-ratio evidence and retain physical Windows DPI results
+  separately.
 - [ ] Record install, launch, update, and uninstall behavior through the chosen
   storefront client.
 - [ ] Scan the exact archive with available malware scanners and record scanner,
