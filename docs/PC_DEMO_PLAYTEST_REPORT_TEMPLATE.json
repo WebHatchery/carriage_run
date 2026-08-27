@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "session": {
+    "session_id": "SESSION-001",
+    "tester_code": "TESTER-001",
+    "candidate_version": "0.1.0",
+    "candidate_commit": "0000000000000000000000000000000000000000",
+    "package_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "active_minutes": 0,
+    "finished_demo": false,
+    "environment_summary": "Replace with non-identifying OS, hardware, display, and input facts.",
+    "observer_notes": "Do not include names, email addresses, credentials, or unrelated personal data."
+  },
+  "issues": [
+    {
+      "issue_id": "SESSION-001-01",
+      "title": "Replace with one concise observed symptom",
+      "category": "comprehension",
+      "severity": "medium",
+      "reproducibility": "once",
+      "critical_path_id": "CR-02",
+      "expected": "What the tester reasonably needed to understand or what the build should do.",
+      "actual": "What was observed without interpreting intent.",
+      "reproduction_steps": [
+        "Use the smallest verified sequence."
+      ],
+      "recovered_unaided": false,
+      "workaround": "Leave empty when no safe tested workaround exists.",
+      "duplicate_group": "",
+      "evidence_refs": [],
+      "status": "new",
+      "acceptance_owner": "",
+      "acceptance_rationale": "",
+      "verification_result": ""
+    }
+  ]
+}

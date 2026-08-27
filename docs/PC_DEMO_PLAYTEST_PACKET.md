@@ -116,3 +116,8 @@ At round end, group duplicates by root symptom, count affected independent
 players, separate comprehension problems from software defects, and rank by
 severity, frequency, player recovery, and critical-path impact. Record the
 reason and human acceptance owner for every deferred high-severity issue.
+
+For structured intake and conservative aggregation, copy
+`PC_DEMO_PLAYTEST_REPORT_TEMPLATE.json` per session and follow
+`PC_DEMO_PLAYTEST_TRIAGE.md`. The triage script groups only explicit observer
+links; it does not guess that similar prose has the same cause.

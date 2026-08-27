@@ -139,3 +139,7 @@ jobs:
           if (-not (Test-Path "Cargo.lock" -PathType Leaf)) { throw "Missing standalone lockfile" }
           if (-not (Test-Path "toolkit.lock" -PathType Leaf)) { throw "Missing toolkit pin" }
           if ((Get-Content -Raw toolkit.lock).Trim() -ne (git -C ..\macroquad-toolkit rev-parse HEAD).Trim()) { throw "Toolkit checkout does not match toolkit.lock" }
+
+      - name: Verify playtest triage safeguards
+        shell: pwsh
+        run: .\scripts\verify_playtest_triage.ps1
