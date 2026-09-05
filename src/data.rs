@@ -1,9 +1,7 @@
 //! Embedded game data and asset manifests.
 
 use macroquad_toolkit::assets::TextureConfig;
-use macroquad_toolkit::data_loader::{
-    load_embedded_json, load_embedded_json_labeled, DataRegistry,
-};
+use macroquad_toolkit::data_loader::{load_embedded_json_labeled, DataRegistry};
 use serde::{Deserialize, Serialize};
 
 const GAME_CONFIG_JSON: &str =
@@ -419,7 +417,8 @@ impl GameData {
         let guard_specializations =
             DataRegistry::from_embedded_json(GUARD_SPECIALIZATIONS_JSON, "id")?;
         let cosmetics = DataRegistry::from_embedded_json(COSMETICS_JSON, "id")?;
-        let texture_manifest = load_embedded_json(TEXTURE_MANIFEST_JSON)?;
+        let texture_manifest =
+            load_embedded_json_labeled("texture_manifest", TEXTURE_MANIFEST_JSON)?;
 
         Ok(Self {
             config,

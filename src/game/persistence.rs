@@ -3,8 +3,8 @@
 use super::Game;
 use crate::state::{migrate_save_value, GameSession, SaveData};
 use macroquad_toolkit::persistence::{
-    delete_slot, get_save_slots, load_from_slot, load_from_slot_with_migration,
-    save_to_slot_with_version, slot_exists,
+    decode_slot_with_migration, delete_slot, encode_slot, get_save_slots, slot_exists, BackupChain,
+    SlotSaveStore,
 };
 
 impl Game {
@@ -39,40 +39,15 @@ impl Game {
     pub(super) fn write_save(&mut self) -> Result<(), String> {
         let save = self.session.to_save(&self.data.config.version);
         let slot = self.session.campaign.active_save_slot.clone();
-        self.rotate_backups(&slot);
-        save_to_slot_with_version(
-            &self.data.config.game_name,
-            &slot,
-            &save,
-            &self.data.config.version,
-        )?;
+        let raw = encode_slot(&slot, &save, &self.data.config.version)?;
+        let mut store = SlotSaveStore {
+            game_name: &self.data.config.game_name,
+        };
+        backup_chain(&slot).save(&mut store, &raw, |raw| self.decode_save(raw).map(|_| ()))?;
         self.save_dirty = false;
         self.autosave.reset_timer();
         self.refresh_save_state();
         Ok(())
-    }
-
-    fn rotate_backups(&self, slot: &str) {
-        for index in (2..=3).rev() {
-            let old = format!("{slot}_backup_{}", index - 1);
-            let next = format!("{slot}_backup_{index}");
-            if let Ok(save) = load_from_slot::<SaveData>(&self.data.config.game_name, &old) {
-                let _ = save_to_slot_with_version(
-                    &self.data.config.game_name,
-                    &next,
-                    &save,
-                    &self.data.config.version,
-                );
-            }
-        }
-        if let Ok(save) = load_from_slot::<SaveData>(&self.data.config.game_name, slot) {
-            let _ = save_to_slot_with_version(
-                &self.data.config.game_name,
-                &format!("{slot}_backup_1"),
-                &save,
-                &self.data.config.version,
-            );
-        }
     }
 
     /// Read and migrate the save slot without applying it — used both to load
@@ -82,17 +57,41 @@ impl Game {
     }
 
     pub(super) fn try_load_save_from_slot(&self, slot: &str) -> Result<SaveData, String> {
-        let first_mission = self.data.first_mission_id().map(ToOwned::to_owned);
-        load_from_slot_with_migration(
-            &self.data.config.game_name,
-            slot,
-            &self.data.config.version,
-            |version, value| {
-                migrate_save_value(version, value, &self.data.config, first_mission.as_deref())
-            },
-        )
+        let store = SlotSaveStore {
+            game_name: &self.data.config.game_name,
+        };
+        backup_chain(slot)
+            .recover(&store, |raw| self.decode_save(raw))
+            .map(|recovered| recovered.value)
+            .map_err(|issues| {
+                issues
+                    .into_iter()
+                    .map(|issue| format!("{}: {}", issue.key, issue.error))
+                    .collect::<Vec<_>>()
+                    .join("; ")
+            })
     }
 
+    fn decode_save(&self, raw: &str) -> Result<SaveData, String> {
+        let value: serde_json::Value =
+            serde_json::from_str(raw).map_err(|error| error.to_string())?;
+        for version in [
+            value.pointer("/slot/version"),
+            value.pointer("/data/version"),
+        ] {
+            if let Some(version) = version.and_then(|value| value.as_str()) {
+                check_supported_version(version, &self.data.config.version)?;
+            }
+        }
+        decode_slot_with_migration(raw, &self.data.config.version, |version, value| {
+            migrate_save_value(
+                version,
+                value,
+                &self.data.config,
+                self.data.first_mission_id(),
+            )
+        })
+    }
     pub(super) fn load_game(&mut self) {
         match self.try_load_save() {
             Ok(save) => {
@@ -199,3 +198,30 @@ fn clean_slot_name(slot: &str) -> Result<String, String> {
 
 #[cfg(test)]
 mod tests;
+
+fn backup_chain(slot: &str) -> BackupChain {
+    BackupChain::new(
+        slot,
+        (1..=3)
+            .map(|index| format!("{slot}_backup_{index}"))
+            .collect(),
+    )
+}
+
+fn check_supported_version(version: &str, current: &str) -> Result<(), String> {
+    let numbers = |text: &str| {
+        text.split('.')
+            .map(str::parse::<u64>)
+            .collect::<Result<Vec<_>, _>>()
+    };
+    match (numbers(version), numbers(current)) {
+        (Ok(found), Ok(expected))
+            if found.len() == 3 && expected.len() == 3 && found <= expected =>
+        {
+            Ok(())
+        }
+        _ => Err(format!(
+            "Unsupported save version {version}; current version is {current}"
+        )),
+    }
+}
