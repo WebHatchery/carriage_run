@@ -1,7 +1,9 @@
-# TODO — Carriage Run (complete)
+# TODO — Carriage Run (release backlog complete)
 
 All release-backlog items below are implemented and verified by the project
 publisher, automated tests, release checks, and browser viewport captures.
+The standards follow-ups at the end are maintainability work identified during
+the September 2026 guidance review.
 
 ## Campaign depth
 
@@ -128,3 +130,44 @@ publisher, automated tests, release checks, and browser viewport captures.
   current repository contents.
 - [x] Add automated browser viewport smoke captures for supported desktop,
   touch-sized, and fullscreen layouts.
+
+## Standards follow-ups
+
+- [ ] Split the seven Rust files already in the 650–784 line range —
+  `src/state.rs`, `src/ui.rs`, `src/ui/gameplay_hud.rs`,
+  `src/ui/management.rs`, `src/ui/mission_map.rs`,
+  `src/ui/mission_map_art.rs`, and `src/ui/upgrade_visuals.rs` — along
+  cohesive responsibilities before adding more screen features; keep the
+  resulting modules near the 200–400 line target and below the 600-line
+  planning threshold.
+- [ ] Refactor functions that exceed the 100-line maximum, starting with
+  `Game::new`, `Game::begin_capture_scene`, `draw_title`, `draw_codex`,
+  `draw_hub`, `draw_roster_guard_card`, `draw_runtime_preferences`, and
+  `CampaignState::normalize`.
+- [ ] Migrate every test and test helper out of `src/**/tests.rs` and inline
+  `#[cfg(test)]` modules into the crate-level `tests/` directory; add
+  `src/lib.rs` as the public test seam and have `main.rs` use the library.
+  Preserve useful coverage while consolidating suites toward five cases per
+  major feature, and update the stale source-gate comment that still says
+  tests are excluded from the 800-line count.
+- [ ] Move the remaining authored gameplay data out of Rust match tables into
+  typed JSON registries loaded through the toolkit, including guard and enemy
+  stats, unlock and cost tables, hazard dimensions/effects, boss definitions,
+  and their project-owned semantic validation.
+- [ ] Complete localization of player-facing literals that remain in Rust:
+  screen labels, buttons, tooltips, tutorials, codex entries, guard/enemy/
+  hazard descriptions, status text, and notifications. Add the keys to the
+  existing English, German, and French tables and keep dynamic formatting in
+  code around localized templates.
+- [ ] Resolve the unused `assets/data/actions.json` template asset by either
+  wiring it through a typed loader and validation or removing it; audit every
+  shipped data JSON file so it has one intentional runtime or verification
+  consumer.
+- [ ] Audit keyboard and controller shortcut copy against the touch-first
+  rule. Replace text such as `CONTROLLER A: confirm B: back X: guard stance`
+  with wording that also names the visible tap/click control or gesture, and
+  add coverage for shortcut notices and recovery/tutorial prompts.
+- [ ] Make the CI-mandated `cargo test --all-features` path pass as well as the
+  default suite: keep full-campaign fixtures independent from the demo-only
+  mission registry and refresh the balance and progression assertions that
+  currently fail under the `demo` feature.
