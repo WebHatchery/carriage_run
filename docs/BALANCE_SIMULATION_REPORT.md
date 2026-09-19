@@ -4,8 +4,7 @@ Date: 2026-08-05
 
 ## Harness
 
-The deterministic harness lives in `src/state/tests/balance.rs`,
-`balance_report.rs`, and `balance_expedition.rs`. It executes the real
+The deterministic harness executes the real
 `MissionRun` loop without rendering and injects boost, cruise, brake, or mixed
 driver policies. The full report covers every mission route, difficulty,
 chassis, and frame with two deterministic seeds and records success rate,
@@ -19,6 +18,11 @@ payout reproducibility. Run the inspectable CSV report with:
 ```powershell
 cargo test state::tests::balance_report -- --nocapture
 ```
+
+This recorded command uses the legacy source-local harness. Its migration is
+tracked in `TODO.md`: move the harness and its test-only helpers into the
+crate's `tests/` directory through intentional public APIs before expanding
+coverage. Follow `CODE_STANDARDS.md` §11 for test placement and feature targets.
 
 ## Stable corridors
 
